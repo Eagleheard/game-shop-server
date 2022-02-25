@@ -1,10 +1,8 @@
-const express = require('express');
+import express from "express";
 
-const config = {
+export const config = {
  app: {
    port: 3000,
    express: express()
  },
 };
-
-module.exports = config;

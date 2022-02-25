@@ -1,5 +1,5 @@
-const config = require('./Config/config');
-const Sequelize = require('sequelize');
+import { config } from './Config/config.js';
+import Sequelize from 'sequelize';
 
 
 config.app.express.get('/', (req, res) => res.send('Notes App'));
