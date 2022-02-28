@@ -15,7 +15,7 @@ class Game {
     return game;
   }
 
-  async create({ name, price, digital, disk, count, popularity, image, genreId }) {
+  async create({ name, price, digital, disk, count, popularity, image, genreId, authorId }) {
     const game = await gameModule.create({
       name,
       price,
@@ -25,6 +25,7 @@ class Game {
       count,
       popularity,
       genreId,
+      authorId,
     });
     return game;
   }

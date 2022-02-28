@@ -29,7 +29,7 @@ class Genre {
   }
 
   async delete(id) {
-    const genre = await authorModule.findByPk(id);
+    const genre = await genreModule.findByPk(id);
     if (!genre) {
       throw new Error('Genre not found');
     }
