@@ -4,9 +4,9 @@ import appError from '../Errors/appError.js';
 class Game {
   async getAll({ query: { limit, page } }, res, next) {
     try {
-      limit = limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 4;
-      page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
-      const options = { limit, page };
+      const dataLimit = limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 4;
+      const currentPage = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
+      const options = { dataLimit, currentPage };
       const games = await gameModule.getAll(options);
       res.json(games);
     } catch (e) {
@@ -14,12 +14,12 @@ class Game {
     }
   }
 
-  async getOne(req, res, next) {
+  async getById(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error('Not found id');
       }
-      const game = await gameModule.getOne(req.params.id);
+      const game = await gameModule.getById(req.params.id);
       res.json(game);
     } catch (e) {
       next(appError.badRequest(e.message));

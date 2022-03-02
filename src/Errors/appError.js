@@ -6,6 +6,10 @@ class AppError extends Error {
   }
 
   static badRequest(message) {
+    return new AppError(400, message);
+  }
+
+  static notFound(message) {
     return new AppError(404, message);
   }
 

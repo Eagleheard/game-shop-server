@@ -11,7 +11,7 @@ export const Game = database.define('game', {
     autoIncrement: true,
   },
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     unique: true,
     allowNull: false,
   },
@@ -33,12 +33,11 @@ export const Game = database.define('game', {
   },
   image: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
 });
 
 Genre.hasMany(Game, { onDelete: 'RESTRICT' });
-Game.belongsTo(Genre);
+Game.belongsTo(Genre, {foreignKey: "genreId"});
 
 Author.hasMany(Game, { onDelete: 'CASCADE' });
-Game.belongsTo(Author);
+Game.belongsTo(Author, {foreignKey: "authorId"});

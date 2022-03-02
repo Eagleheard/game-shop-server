@@ -5,6 +5,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.16.2"
@@ -15,7 +16,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./index.js"
+    "dev": "nodemon src/index.js module-alias/register"
   },
   "keywords": [],
   "author": "",
@@ -23,5 +24,11 @@
   "description": "",
   "devDependencies": {
     "prettier": "2.5.1"
+  },
+  "_moduleAliases": {
+    "@root"      : ".",
+    "@my_module" : "src/Controllers/author.js",
+    "@controllers": "src/Controllers"
+
   }
 }

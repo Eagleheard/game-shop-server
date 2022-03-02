@@ -1,23 +1,23 @@
-import genreModule from '../Models/Genre/genre.js';
+import authorModule from '../Models/Author/author.js';
 import appError from '../Errors/appError.js';
 
-class Genre {
+class Author {
   async getAll(req, res, next) {
     try {
-      const genre = await genreModule.getAll();
-      res.json(genre);
+      const author = await authorModule.getAll();
+      res.status(200).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
   }
 
-  async getOne(req, res, next) {
+  async getById(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error('Not found id');
       }
-      const genre = await genreModule.findByPk(req.params.id);
-      res.json(genre);
+      const author = await authorModule.getById(req.params.id);
+      res.status(200).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -25,8 +25,8 @@ class Genre {
 
   async create(req, res, next) {
     try {
-      const genre = await genreModule.create(req.body);
-      res.json(genre);
+      const author = await authorModule.create(req.body);
+      res.status(200).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -37,8 +37,8 @@ class Genre {
       if (!req.params.id) {
         throw new Error('Not found id');
       }
-      const genre = await genreModule.update(req.params.id, req.body);
-      res.json(genre);
+      const author = await authorModule.update(req.params.id, req.body);
+      res.status(200).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -49,12 +49,12 @@ class Genre {
       if (!req.params.id) {
         throw new Error('Not found id');
       }
-      const genre = await genreModule.delete(req.params.id);
-      res.json(genre);
+      const author = await authorModule.delete(req.params.id);
+      res.status(200).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
   }
 }
 
-export default new Genre();
+export default new Author();

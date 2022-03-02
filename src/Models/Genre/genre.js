@@ -14,17 +14,17 @@ class Genre {
     return genre;
   }
 
-  async create({ name }) {
-    const genre = await genreModule.create({ name });
+  async create(data) {
+    const genre = await genreModule.create(data);
     return genre;
   }
 
-  async update(id, { name }) {
+  async update(id, data) {
     const genre = await genreModule.findByPk(id);
     if (!genre) {
       throw new Error('Genre not found');
     }
-    await genre.update({ name });
+    await genre.update(data);
     return genre;
   }
 

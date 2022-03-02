@@ -1,12 +1,11 @@
 import { Author as authorModule } from './index.js';
 
 class Author {
-  async getAll() {
-    const author = await authorModule.findAll();
-    return author;
+  getAll() {
+    return authorModule.findAll();
   }
 
-  async getOne(id) {
+  async getById(id) {
     const author = await authorModule.findByPk(id);
     if (!author) {
       throw new Error('Author not found');
@@ -14,17 +13,17 @@ class Author {
     return author;
   }
 
-  async create({ name, image, location, description }) {
-    const author = await authorModule.create({ name, image, location, description });
+  async create(data) {
+    const author = await authorModule.create(data);
     return author;
   }
 
-  async update(id, { name, image, location, description }) {
+  async update(id, data) {
     const author = await authorModule.findByPk(id);
     if (!author) {
       throw new Error('Author not found');
     }
-    await author.update({ name, image, location, description });
+    await author.update(data);
     return author;
   }
 

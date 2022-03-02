@@ -15,8 +15,7 @@ class User {
   }
 
   async create(data) {
-    const { email, password, role } = data;
-    const user = await userModule.create({ email, password, role });
+    const user = await userModule.create(data);
     return user;
   }
 

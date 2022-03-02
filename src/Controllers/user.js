@@ -23,12 +23,12 @@ class User {
     }
   }
 
-  async getOne(req, res, next) {
+  async getById(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error('Not found Id');
       }
-      const user = await userModule.getOne(req.params.id);
+      const user = await userModule.getById(req.params.id);
       res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));
