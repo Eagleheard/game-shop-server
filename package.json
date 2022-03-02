@@ -3,6 +3,7 @@
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
+    "esm": "^3.2.25",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
@@ -12,11 +13,10 @@
   },
   "name": "game-shop-server",
   "version": "1.0.0",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.js module-alias/register"
+    "dev": "nodemon -r esm -r module-alias/register"
   },
   "keywords": [],
   "author": "",
@@ -26,9 +26,12 @@
     "prettier": "2.5.1"
   },
   "_moduleAliases": {
-    "@root"      : ".",
-    "@my_module" : "src/Controllers/author.js",
-    "@controllers": "src/Controllers"
-
+    "@root": ".",
+    "@controllers": "src/Controllers",
+    "@errors": "src/Errors",
+    "@models": "src/Models",
+    "@routes": "src/Routes",
+    "@middleware": "src/Middleware",
+    "@config": "src/Config"
   }
 }

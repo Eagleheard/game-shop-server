@@ -1,5 +1,5 @@
-import authorModule from '../Models/Author/author.js';
-import appError from '../Errors/appError.js';
+import authorModule from '@models/Author/author.js';
+import appError from '@errors/appError.js';
 
 class Author {
   async getAll(req, res, next) {
@@ -17,6 +17,9 @@ class Author {
         throw new Error('Not found id');
       }
       const author = await authorModule.getById(req.params.id);
+      if (!author) {
+        throw new Error('Author not found');
+      }
       res.status(200).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
@@ -26,7 +29,7 @@ class Author {
   async create(req, res, next) {
     try {
       const author = await authorModule.create(req.body);
-      res.status(200).json(author);
+      res.status(201).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -38,7 +41,10 @@ class Author {
         throw new Error('Not found id');
       }
       const author = await authorModule.update(req.params.id, req.body);
-      res.status(200).json(author);
+      if (!author) {
+        throw new Error('Author not found');
+      }
+      res.status(201).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -50,6 +56,9 @@ class Author {
         throw new Error('Not found id');
       }
       const author = await authorModule.delete(req.params.id);
+      if (!author) {
+        throw new Error('Author not found');
+      }
       res.status(200).json(author);
     } catch (e) {
       next(appError.badRequest(e.message));

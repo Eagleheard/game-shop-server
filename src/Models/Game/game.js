@@ -1,39 +1,40 @@
 import { Game as gameModule } from './index.js';
+import { Genre as genreModule } from '@models/Genre/index.js';
+import { Author as authorModule } from '@models/Author/index.js';
 
 class Game {
-  async getAll({ dataLimit, currentPage }) {
+  getAll({ dataLimit, currentPage, authorId, genreId }) {
     const offset = (currentPage - 1) * dataLimit;
-    const game = await gameModule.findAll({ dataLimit, offset });
-    return game;
+    const where = {};
+    if (genreId) where.genreId = genreId;
+    if (authorId) where.authorId = authorId;
+    return gameModule.findAll({
+      dataLimit,
+      offset,
+      where,
+      include: [
+        { model: genreModule, as: 'genre' },
+        { model: authorModule, as: 'author' },
+      ],
+    });
   }
 
-  async getById(id) {
-    const game = await gameModule.findByPk(id);
-    if (!game) {
-      throw new Error('Game not found');
-    }
-    return game;
+  getById(id) {
+    return gameModule.findByPk(id);
   }
 
-  async create(data) {
-    const game = await gameModule.create(data);
-    return game;
+  create(data) {
+    return gameModule.create(data);
   }
 
   async update(id, data) {
     const game = await gameModule.findByPk(id);
-    if (!game) {
-      throw new Error('Game not found');
-    }
     await game.update(data);
     return game;
   }
 
   async delete(id) {
     const game = await gameModule.findByPk(id);
-    if (!game) {
-      throw new Error('Game not found');
-    }
     await game.destroy();
     return game;
   }

@@ -1,11 +1,10 @@
 import express from 'express';
 import config from 'dotenv/config';
-import { database } from './Config/database.js';
+import { database } from '@config/database.js';
 import cors from 'cors';
 
-import ErrorHandler from './Middleware/errorHandler.js';
-import router from './Routes/index.js';
-
+import ErrorHandler from '@middleware/errorHandler.js';
+import router from '@routes/index.js';
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -22,7 +21,15 @@ const corsOptions = {
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
   optionsSuccessStatus: 200,
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'device-remember-token', 'Access-Control-Allow-Origin', 'Origin', 'Accept']
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'device-remember-token',
+    'Access-Control-Allow-Origin',
+    'Origin',
+    'Accept',
+  ],
 };
 
 app.use(cors(corsOptions));
@@ -41,7 +48,7 @@ app.post('/', (req, res) => {
 const start = async () => {
   try {
     await database.authenticate();
-    await database.sync({force: true});
+    await database.sync();
     app.listen(PORT, () => console.log('Server started on', PORT));
   } catch (e) {
     console.log(e);

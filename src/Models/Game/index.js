@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
-import { database } from '../../Config/database.js';
+import { database } from '@config/database.js';
 
-import { Genre } from '../Genre/index.js';
-import { Author } from '../Author/index.js';
+import { Genre } from '@models/Genre/index.js';
+import { Author } from '@models/Author/index.js';
 
 export const Game = database.define('game', {
   id: {
@@ -37,7 +37,7 @@ export const Game = database.define('game', {
 });
 
 Genre.hasMany(Game, { onDelete: 'RESTRICT' });
-Game.belongsTo(Genre, {foreignKey: "genreId"});
+Game.belongsTo(Genre, { foreignKey: 'genreId' });
 
 Author.hasMany(Game, { onDelete: 'CASCADE' });
-Game.belongsTo(Author, {foreignKey: "authorId"});
+Game.belongsTo(Author, { foreignKey: 'authorId' });

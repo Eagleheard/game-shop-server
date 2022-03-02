@@ -1,5 +1,5 @@
-import userModule from '../Models/User/user.js';
-import AppError from '../errors/AppError.js';
+import userModule from '@models/User/user.js';
+import AppError from '@errors/AppError.js';
 
 class User {
   async signup(req, res, next) {

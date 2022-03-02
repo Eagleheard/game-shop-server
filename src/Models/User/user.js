@@ -1,9 +1,8 @@
 import userModule from './index.js';
 
 class User {
-  async getAll() {
-    const users = await userModule.findAll();
-    return users;
+  getAll() {
+    return userModule.findAll();
   }
 
   async getOne(id) {
@@ -14,9 +13,8 @@ class User {
     return user;
   }
 
-  async create(data) {
-    const user = await userModule.create(data);
-    return user;
+  create(data) {
+    return userModule.create(data);
   }
 
   async update(id, data) {
@@ -24,8 +22,7 @@ class User {
     if (!user) {
       throw new Error('User not found');
     }
-    const { email = user.email, password = user.password, role = user.role } = data;
-    await user.update({ email, password, role });
+    await user.update(data);
     return user;
   }
 

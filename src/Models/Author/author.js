@@ -5,33 +5,22 @@ class Author {
     return authorModule.findAll();
   }
 
-  async getById(id) {
-    const author = await authorModule.findByPk(id);
-    if (!author) {
-      throw new Error('Author not found');
-    }
-    return author;
+  getById(id) {
+    return authorModule.findByPk(id);
   }
 
-  async create(data) {
-    const author = await authorModule.create(data);
-    return author;
+  create(data) {
+    return authorModule.create(data);
   }
 
   async update(id, data) {
     const author = await authorModule.findByPk(id);
-    if (!author) {
-      throw new Error('Author not found');
-    }
     await author.update(data);
     return author;
   }
 
   async delete(id) {
     const author = await authorModule.findByPk(id);
-    if (!author) {
-      throw new Error('Author not found');
-    }
     await author.destroy();
     return author;
   }

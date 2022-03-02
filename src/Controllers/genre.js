@@ -1,11 +1,14 @@
-import genreModule from '../Models/Genre/genre.js';
-import appError from '../Errors/appError.js';
+import genreModule from '@models/Genre/genre.js';
+import appError from '@errors/appError.js';
 
 class Genre {
   async getAll(req, res, next) {
     try {
       const genre = await genreModule.getAll();
-      res.json(genre);
+      if (!genre) {
+        throw new Error('Genre not found');
+      }
+      res.status(200).json(genre);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -17,7 +20,7 @@ class Genre {
         throw new Error('Not found id');
       }
       const genre = await genreModule.getById(req.params.id);
-      res.json(genre);
+      res.status(200).json(genre);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -26,7 +29,7 @@ class Genre {
   async create(req, res, next) {
     try {
       const genre = await genreModule.create(req.body);
-      res.json(genre);
+      res.status(201).json(genre);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -38,7 +41,10 @@ class Genre {
         throw new Error('Not found id');
       }
       const genre = await genreModule.update(req.params.id, req.body);
-      res.json(genre);
+      if (!genre) {
+        throw new Error('Genre not found');
+      }
+      res.status(201).json(genre);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
@@ -50,7 +56,10 @@ class Genre {
         throw new Error('Not found id');
       }
       const genre = await genreModule.delete(req.params.id);
-      res.json(genre);
+      if (!genre) {
+        throw new Error('Genre not found');
+      }
+      res.status(200).json(genre);
     } catch (e) {
       next(appError.badRequest(e.message));
     }
