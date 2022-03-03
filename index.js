@@ -9,7 +9,7 @@ import router from '@routes/index.js';
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-var whitelist = ['http://localhost:3000'];
+var whitelist = process.env.WHITELIST;
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -36,14 +36,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/api', router);
 app.use(ErrorHandler);
-
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Hello, world!' });
-});
-
-app.post('/', (req, res) => {
-  res.status(200).json(req.body);
-});
 
 const start = async () => {
   try {

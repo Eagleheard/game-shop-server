@@ -11,7 +11,7 @@ export const Game = database.define('game', {
     autoIncrement: true,
   },
   name: {
-    type: DataTypes.STRING(15),
+    type: DataTypes.STRING(25),
     unique: true,
     allowNull: false,
   },
@@ -32,6 +32,15 @@ export const Game = database.define('game', {
     type: DataTypes.INTEGER,
   },
   image: {
+    type: DataTypes.STRING,
+  },
+  new: {
+    type: DataTypes.BOOLEAN,
+  },
+  isPreview: {
+    type: DataTypes.BOOLEAN,
+  },
+  preview: {
     type: DataTypes.STRING,
   },
 });

@@ -19,6 +19,9 @@ export const Author = database.define('author', {
     type: DataTypes.STRING,
   },
   description: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(200),
+  },
+  popularity: {
+    type: DataTypes.INTEGER,
   },
 });

@@ -19,6 +19,18 @@ class Game {
     });
   }
 
+  getAllByAuthor({ id }) {
+    return gameModule.findAll({
+      where: {
+        authorId: id,
+      },
+      include: [
+        { model: genreModule, as: 'genre' },
+        { model: authorModule, as: 'author' },
+      ],
+    });
+  }
+
   getById(id) {
     return gameModule.findByPk(id);
   }

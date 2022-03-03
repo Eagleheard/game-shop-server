@@ -14,6 +14,21 @@ class Game {
     }
   }
 
+  async getAllByAuthor({ query: id }, res, next) {
+    try {
+      if (!id) {
+        throw new Error('Not found id');
+      }
+      const game = await gameModule.getAllByAuthor(id);
+      if (!game) {
+        throw new Error('Games not found');
+      }
+      res.status(200).json(game);
+    } catch (e) {
+      next(appError.badRequest(e.message));
+    }
+  }
+
   async getById(req, res, next) {
     try {
       if (!req.params.id) {
