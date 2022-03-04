@@ -1,4 +1,5 @@
 import express from 'express';
+
 import authorController from '@controllers/author.js';
 
 const router = new express.Router();

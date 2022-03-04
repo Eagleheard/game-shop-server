@@ -1,4 +1,5 @@
 import express from 'express';
+
 import gameController from '@controllers/game.js';
 
 const router = new express.Router();
