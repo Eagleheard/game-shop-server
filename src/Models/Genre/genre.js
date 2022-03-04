@@ -5,7 +5,7 @@ class Genre {
     return genreModule.findAll();
   }
 
-  getOne(id) {
+  getById(id) {
     return genreModule.findByPk(id);
   }
 

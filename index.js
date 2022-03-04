@@ -1,8 +1,8 @@
 import express from 'express';
 import config from 'dotenv/config';
-import { database } from '@config/database.js';
 import cors from 'cors';
 
+import { database } from '@config/database.js';
 import ErrorHandler from '@middleware/errorHandler.js';
 import router from '@routes/index.js';
 
@@ -40,7 +40,7 @@ app.use(ErrorHandler);
 const start = async () => {
   try {
     await database.authenticate();
-    await database.sync();
+    await database.sync({ alter: true });
     app.listen(PORT, () => console.log('Server started on', PORT));
   } catch (e) {
     console.log(e);

@@ -17,54 +17,66 @@ class User {
   async getAll(req, res, next) {
     try {
       const users = await userModule.getAll();
-      res.json(users);
+      if (!users) {
+        next(AppError.badRequest('Users does not exist'))
+      }
+      res.status(200).json(users);
     } catch (e) {
-      next(AppError.badRequest(e.message));
+      next(AppError.internalServerError(e.message));
     }
   }
 
   async getById(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found Id');
+        next(AppError.badRequest('Id was not set'));
       }
       const user = await userModule.getById(req.params.id);
-      res.json(user);
+      if (!user) {
+        next(AppError.internalServerError('User not found'));
+      }
+      res.status(200).json(user);
     } catch (e) {
-      next(AppError.badRequest(e.message));
+      next(AppError.internalServerError(e.message));
     }
   }
 
   async create(req, res, next) {
     try {
       const user = await userModule.create(req.body);
-      res.json(user);
+      res.status(201).json(user);
     } catch (e) {
-      next(AppError.badRequest(e.message));
+      next(AppError.internalServerError(e.message));
     }
   }
 
   async update(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found Id');
+        next(AppError.badRequest('Id was not set'));
       }
       const user = await userModule.update(req.params.id, req.body);
-      res.json(user);
+      if (!user) {
+        next(AppError.internalServerError('User not found'));
+      }
+      res.status(201).json(user);
     } catch (e) {
-      next(AppError.badRequest(e.message));
+      next(AppError.internalServerError(e.message));
     }
   }
 
   async delete(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found Id');
+        next(AppError.badRequest('Id was not set'));
       }
       const user = await userModule.delete(req.params.id);
-      res.json(user);
+      if (!user) {
+        next(AppError.internalServerError('User not found'));
+      }
+      res.status(200).json(user);
     } catch (e) {
-      next(AppError.badRequest(e.message));
+      next(AppError.internalServerError(e.message));
     }
   }
 }

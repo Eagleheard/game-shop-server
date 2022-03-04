@@ -7,10 +7,10 @@ router.post('/signup', userController.signup);
 router.post('/login', userController.login);
 router.get('/check', userController.check);
 
-router.get('/getall', userController.getAll);
-router.get('/getone/:id([0-9]+)', userController.getById);
-router.post('/create', userController.create);
-router.put('/update/:id([0-9]+)', userController.update);
-router.delete('/delete/:id([0-9]+)', userController.delete);
+router.get('/', userController.getAll);
+router.get('/:id([0-9]+)', userController.getById);
+router.post('/', userController.create);
+router.put('/:id([0-9]+)', userController.update);
+router.delete('/:id([0-9]+)', userController.delete);
 
 export default router;

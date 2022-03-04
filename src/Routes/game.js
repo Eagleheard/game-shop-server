@@ -3,11 +3,10 @@ import gameController from '@controllers/game.js';
 
 const router = new express.Router();
 
-router.get('/getall', gameController.getAll);
-router.get('/getallbyauthor', gameController.getAllByAuthor);
-router.get('/getone/:id([0-9]+)', gameController.getById);
-router.post('/create', gameController.create);
-router.put('/update/:id([0-9]+)', gameController.update);
-router.delete('/delete/:id([0-9]+)', gameController.delete);
+router.get('/', gameController.getAll);
+router.get('/:id([0-9]+)', gameController.getById);
+router.post('/', gameController.create);
+router.put('/:id([0-9]+)', gameController.update);
+router.delete('/:id([0-9]+)', gameController.delete);
 
 export default router;

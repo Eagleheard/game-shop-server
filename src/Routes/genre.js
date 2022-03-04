@@ -3,10 +3,10 @@ import genreController from '@controllers/genre.js';
 
 const router = new express.Router();
 
-router.get('/getall', genreController.getAll);
-router.get('/getone/:id([0-9]+)', genreController.getById);
-router.post('/create', genreController.create);
-router.put('/update/:id([0-9]+)', genreController.update);
-router.delete('/delete/:id([0-9]+)', genreController.delete);
+router.get('/', genreController.getAll);
+router.get('/:id([0-9]+)', genreController.getById);
+router.post('/', genreController.create);
+router.put('/:id([0-9]+)', genreController.update);
+router.delete('/:id([0-9]+)', genreController.delete);
 
 export default router;

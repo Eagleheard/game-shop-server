@@ -34,7 +34,7 @@ export const Game = database.define('game', {
   image: {
     type: DataTypes.STRING,
   },
-  new: {
+  isNew: {
     type: DataTypes.BOOLEAN,
   },
   isPreview: {

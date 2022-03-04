@@ -5,24 +5,27 @@ class Author {
   async getAll(req, res, next) {
     try {
       const author = await authorModule.getAll();
+      if (!author) {
+        next(appError.internalServerError('Authors does not exists'));
+      }
       res.status(200).json(author);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async getById(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found id');
+        next(appError.badRequest('Id was not set'));
       }
       const author = await authorModule.getById(req.params.id);
       if (!author) {
-        throw new Error('Author not found');
+        next(appError.internalServerError('Author not found'));
       }
       res.status(200).json(author);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
@@ -31,37 +34,37 @@ class Author {
       const author = await authorModule.create(req.body);
       res.status(201).json(author);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async update(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found id');
+        next(appError.badRequest('Id was not set'));
       }
       const author = await authorModule.update(req.params.id, req.body);
       if (!author) {
-        throw new Error('Author not found');
+        next(appError.internalServerError('Not found Id'));
       }
-      res.status(201).json(author);
+      res.status(200).json(author);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async delete(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found id');
+        next(appError.badRequest('Id was not set'));
       }
       const author = await authorModule.delete(req.params.id);
       if (!author) {
-        throw new Error('Author not found');
+        next(appError.internalServerError('Author not found'));
       }
       res.status(200).json(author);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 }

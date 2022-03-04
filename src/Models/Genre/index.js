@@ -8,7 +8,7 @@ export const Genre = database.define('genre', {
     autoIncrement: true,
   },
   genreName: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
   },
 });

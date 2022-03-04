@@ -5,12 +5,8 @@ class User {
     return userModule.findAll();
   }
 
-  async getOne(id) {
-    const user = await userModule.findByPk(id);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    return user;
+  getOne(id) {
+    return userModule.findByPk(id);
   }
 
   create(data) {
@@ -19,18 +15,12 @@ class User {
 
   async update(id, data) {
     const user = await userModule.findByPk(id);
-    if (!user) {
-      throw new Error('User not found');
-    }
     await user.update(data);
     return user;
   }
 
   async delete(id) {
     const user = await userModule.findByPk(id);
-    if (!user) {
-      throw new Error('User not found');
-    }
     await user.destroy();
     return user;
   }

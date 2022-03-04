@@ -6,23 +6,26 @@ class Genre {
     try {
       const genre = await genreModule.getAll();
       if (!genre) {
-        throw new Error('Genre not found');
+        next(appError.internalServerError('Genres does not exist'));
       }
       res.status(200).json(genre);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async getById(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found id');
+        next(appError.badRequest('Id was not set'));
       }
       const genre = await genreModule.getById(req.params.id);
+      if (!genre) {
+        next(appError.internalServerError('Genre not found'));
+      }
       res.status(200).json(genre);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
@@ -31,37 +34,37 @@ class Genre {
       const genre = await genreModule.create(req.body);
       res.status(201).json(genre);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async update(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found id');
+        next(appError.badRequest('Id was not set'));
       }
       const genre = await genreModule.update(req.params.id, req.body);
       if (!genre) {
-        throw new Error('Genre not found');
+        next(appError.internalServerError('Genre not found'));
       }
       res.status(201).json(genre);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async delete(req, res, next) {
     try {
       if (!req.params.id) {
-        throw new Error('Not found id');
+        next(appError.badRequest('Id was not set'));
       }
       const genre = await genreModule.delete(req.params.id);
       if (!genre) {
-        throw new Error('Genre not found');
+        next(appError.internalServerError('Genre not found'));
       }
       res.status(200).json(genre);
     } catch (e) {
-      next(appError.badRequest(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 }
