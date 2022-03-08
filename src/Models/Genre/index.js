@@ -7,7 +7,7 @@ export const Genre = database.define('genre', {
     primaryKey: true,
     autoIncrement: true,
   },
-  genreName: {
+  name: {
     type: DataTypes.STRING(20),
     allowNull: false,
   },
