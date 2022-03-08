@@ -6,7 +6,7 @@ class Genre {
     try {
       const genre = await genreModule.getAll();
       if (!genre) {
-        next(appError.internalServerError('Genres does not exist'));
+        next(appError.notFound('Genres does not exist'));
       }
       res.status(200).json(genre);
     } catch (e) {
@@ -21,7 +21,7 @@ class Genre {
       }
       const genre = await genreModule.getById(req.params.id);
       if (!genre) {
-        next(appError.internalServerError('Genre not found'));
+        next(appError.notFound('Selected genre does not exist'));
       }
       res.status(200).json(genre);
     } catch (e) {
@@ -45,9 +45,9 @@ class Genre {
       }
       const genre = await genreModule.update(req.params.id, req.body);
       if (!genre) {
-        next(appError.internalServerError('Genre not found'));
+        next(appError.notFound('Selected genre does not exist'));
       }
-      res.status(201).json(genre);
+      res.status(200).json(genre);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -60,7 +60,7 @@ class Genre {
       }
       const genre = await genreModule.delete(req.params.id);
       if (!genre) {
-        next(appError.internalServerError('Genre not found'));
+        next(appError.notFound('Selected genre does not exist'));
       }
       res.status(200).json(genre);
     } catch (e) {

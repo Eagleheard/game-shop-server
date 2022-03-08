@@ -39,7 +39,7 @@ class Game {
       };
       const games = await gameModule.getAll(options);
       if (!games) {
-        next(appError.internalServerError('Games does not exists'));
+        next(appError.notFound('Games does not exists'));
       }
       res.status(200).json(games);
     } catch (e) {
@@ -54,7 +54,7 @@ class Game {
       }
       const game = await gameModule.getById(req.params.id);
       if (!game) {
-        next(appError.internalServerError('Game not found'));
+        next(appError.notFound('Selected game does not exist'));
       }
       res.status(200).json(game);
     } catch (e) {
@@ -78,9 +78,9 @@ class Game {
       }
       const game = await gameModule.update(req.params.id, req.body);
       if (!game) {
-        next(appError.internalServerError('Game not found'));
+        next(appError.notFound('Selected game does not exist'));
       }
-      res.status(201).json(game);
+      res.status(200).json(game);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -93,7 +93,7 @@ class Game {
       }
       const game = await gameModule.delete(req.params.id);
       if (!game) {
-        next(appError.internalServerError('Game not found'));
+        next(appError.notFound('Selected game does not exist'));
       }
       res.status(200).json(game);
     } catch (e) {

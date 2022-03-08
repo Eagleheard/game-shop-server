@@ -6,7 +6,7 @@ class Author {
     try {
       const author = await authorModule.getAll();
       if (!author) {
-        next(appError.internalServerError('Authors does not exists'));
+        next(appError.notFound('Authors does not exists'));
       }
       res.status(200).json(author);
     } catch (e) {
@@ -21,7 +21,7 @@ class Author {
       }
       const author = await authorModule.getById(req.params.id);
       if (!author) {
-        next(appError.internalServerError('Author not found'));
+        next(appError.notFound('Selected author does not exist'));
       }
       res.status(200).json(author);
     } catch (e) {
@@ -45,7 +45,7 @@ class Author {
       }
       const author = await authorModule.update(req.params.id, req.body);
       if (!author) {
-        next(appError.internalServerError('Not found Id'));
+        next(appError.notFound('Selected author does not exist'));
       }
       res.status(200).json(author);
     } catch (e) {
@@ -60,7 +60,7 @@ class Author {
       }
       const author = await authorModule.delete(req.params.id);
       if (!author) {
-        next(appError.internalServerError('Author not found'));
+        next(appError.notFound('Selected author does not exist'));
       }
       res.status(200).json(author);
     } catch (e) {

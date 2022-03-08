@@ -18,7 +18,7 @@ class User {
     try {
       const users = await userModule.getAll();
       if (!users) {
-        next(AppError.badRequest('Users does not exist'))
+        next(AppError.notFound('Users does not exist'));
       }
       res.status(200).json(users);
     } catch (e) {
@@ -33,7 +33,7 @@ class User {
       }
       const user = await userModule.getById(req.params.id);
       if (!user) {
-        next(AppError.internalServerError('User not found'));
+        next(AppError.notFound('Selected user does not exist'));
       }
       res.status(200).json(user);
     } catch (e) {
@@ -57,9 +57,9 @@ class User {
       }
       const user = await userModule.update(req.params.id, req.body);
       if (!user) {
-        next(AppError.internalServerError('User not found'));
+        next(AppError.notFound('Selected user does not exist'));
       }
-      res.status(201).json(user);
+      res.status(200).json(user);
     } catch (e) {
       next(AppError.internalServerError(e.message));
     }
@@ -72,7 +72,7 @@ class User {
       }
       const user = await userModule.delete(req.params.id);
       if (!user) {
-        next(AppError.internalServerError('User not found'));
+        next(AppError.notFound('Selected user does not exist'));
       }
       res.status(200).json(user);
     } catch (e) {
