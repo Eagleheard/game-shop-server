@@ -61,7 +61,10 @@ class Game {
   }
 
   getById(id) {
-    return gameModule.findByPk(id);
+    return gameModule.findByPk(id, { include: [
+      { model: genreModule, as: 'genre' },
+      { model: authorModule, as: 'author' },
+    ]});
   }
 
   create(data) {

@@ -43,6 +43,9 @@ export const Game = database.define('game', {
   preview: {
     type: DataTypes.STRING,
   },
+  description: {
+    type: DataTypes.STRING(300),
+  },
 });
 
 Genre.hasMany(Game, { onDelete: 'RESTRICT' });
