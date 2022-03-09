@@ -2,41 +2,11 @@ import gameModule from '@models/Game/game.js';
 import appError from '@errors/appError.js';
 
 class Game {
-  async getAll(
-    {
-      query: {
-        limit,
-        page,
-        authorId,
-        genreId,
-        isNew,
-        isPreview,
-        popularity,
-        digital,
-        disk,
-        count,
-        price,
-      },
-    },
-    res,
-    next,
-  ) {
+  async getAll({ params, query, query: {dataLimit, page} }, res, next) {
     try {
-      const dataLimit = limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 4;
+      const limit = dataLimit && /[0-9]+/.test(dataLimit) && parseInt(dataLimit) ? parseInt(dataLimit) : 4;
       const currentPage = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
-      const options = {
-        dataLimit,
-        currentPage,
-        authorId,
-        genreId,
-        isNew,
-        isPreview,
-        popularity,
-        digital,
-        disk,
-        count,
-        price,
-      };
+      const options = { limit, currentPage, ...query, ...params};
       const games = await gameModule.getAll(options);
       if (!games) {
         next(appError.notFound('Games does not exists'));

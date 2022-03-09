@@ -4,7 +4,7 @@ import { Author as authorModule } from '@models/Author/index.js';
 
 class Game {
   getAll({
-    dataLimit,
+    limit,
     currentPage,
     authorId,
     genreId,
@@ -16,8 +16,9 @@ class Game {
     count,
     price,
   }) {
-    const offset = (currentPage - 1) * dataLimit;
+    const offset = (currentPage - 1) * limit;
     const where = {};
+    const order = [];
     if (genreId) {
       where.genreId = genreId;
     }
@@ -40,7 +41,7 @@ class Game {
       where.isNew = isNew;
     }
     if (popularity) {
-      where.popularity = popularity;
+      order.push([popularity, 'DESC']);
     }
     if (isPreview) {
       where.isPreview = isPreview;
@@ -50,8 +51,9 @@ class Game {
     }
 
     return gameModule.findAll({
-      dataLimit,
+      limit,
       offset,
+      order,
       where,
       include: [
         { model: genreModule, as: 'genre' },
@@ -61,10 +63,12 @@ class Game {
   }
 
   getById(id) {
-    return gameModule.findByPk(id, { include: [
-      { model: genreModule, as: 'genre' },
-      { model: authorModule, as: 'author' },
-    ]});
+    return gameModule.findByPk(id, {
+      include: [
+        { model: genreModule, as: 'genre' },
+        { model: authorModule, as: 'author' },
+      ],
+    });
   }
 
   create(data) {
