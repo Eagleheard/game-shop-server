@@ -10,7 +10,7 @@ class Game {
     genreId,
     isNew,
     isPreview,
-    popularity,
+    isOrder,
     digital,
     disk,
     count,
@@ -40,8 +40,8 @@ class Game {
     if (isNew) {
       where.isNew = isNew;
     }
-    if (popularity) {
-      order.push([popularity, 'DESC']);
+    if (isOrder) {
+      order.push([isOrder, 'DESC']);
     }
     if (isPreview) {
       where.isPreview = isPreview;
