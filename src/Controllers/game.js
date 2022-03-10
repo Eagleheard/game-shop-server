@@ -2,12 +2,11 @@ import gameModule from '@models/Game/game.js';
 import appError from '@errors/appError.js';
 
 class Game {
-  async getAll({ query, query: { dataLimit, page } }, res, next) {
+  async getAll({ query, query: { limit, page } }, res, next) {
     try {
-      const limit =
-        dataLimit && /[0-9]+/.test(dataLimit) && parseInt(dataLimit) ? parseInt(dataLimit) : 4;
+      const dataLimit = limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 4;
       const currentPage = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
-      const options = { limit, currentPage, ...query };
+      const options = { dataLimit, currentPage, ...query };
       const games = await gameModule.getAll(options);
       if (!games) {
         next(appError.notFound('Games does not exists'));

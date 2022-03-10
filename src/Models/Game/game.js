@@ -4,7 +4,7 @@ import { Author as authorModule } from '@models/Author/index.js';
 
 class Game {
   getAll({
-    limit,
+    dataLimit,
     currentPage,
     authorId,
     genreId,
@@ -16,7 +16,7 @@ class Game {
     count,
     price,
   }) {
-    const offset = (currentPage - 1) * limit;
+    const offset = (currentPage - 1) * dataLimit;
     const where = {};
     const orderBy = [];
     if (genreId) {
@@ -51,9 +51,9 @@ class Game {
     }
 
     return gameModule.findAll({
-      limit,
+      limit: dataLimit,
       offset,
-      order : orderBy,
+      order: orderBy,
       where,
       include: [
         { model: genreModule, as: 'genre' },
