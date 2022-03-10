@@ -10,7 +10,7 @@ class Game {
     genreId,
     isNew,
     isPreview,
-    isOrder,
+    order,
     digital,
     disk,
     count,
@@ -18,7 +18,7 @@ class Game {
   }) {
     const offset = (currentPage - 1) * limit;
     const where = {};
-    const order = [];
+    const orderBy = [];
     if (genreId) {
       where.genreId = genreId;
     }
@@ -40,8 +40,8 @@ class Game {
     if (isNew) {
       where.isNew = isNew;
     }
-    if (isOrder) {
-      order.push([isOrder, 'DESC']);
+    if (order) {
+      orderBy.push([order, 'DESC']);
     }
     if (isPreview) {
       where.isPreview = isPreview;
@@ -53,7 +53,7 @@ class Game {
     return gameModule.findAll({
       limit,
       offset,
-      order,
+      order : orderBy,
       where,
       include: [
         { model: genreModule, as: 'genre' },
