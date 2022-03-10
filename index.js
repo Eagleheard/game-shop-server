@@ -1,18 +1,50 @@
-import { config } from './Config/config.js';
-import Sequelize from 'sequelize';
+import express from 'express';
+import config from 'dotenv/config';
+import cors from 'cors';
 
+import { database } from '@config/database.js';
+import ErrorHandler from '@middleware/errorHandler.js';
+import router from '@routes/index.js';
 
-config.app.express.get('/', (req, res) => res.send('Notes App'));
+const PORT = process.env.PORT || 5000;
+const app = express();
 
-config.app.express.listen(config.app.port, () => console.log(`notes-app listening on port ${config.app.port}!`));
+var whitelist = process.env.WHITELIST;
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+  optionsSuccessStatus: 200,
+  credentials: true,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'device-remember-token',
+    'Access-Control-Allow-Origin',
+    'Origin',
+    'Accept',
+  ],
+};
 
-const sequelize = new Sequelize('game_shop', 'postgres', 'Outcast00', {
-  dialect: 'postgres',
-});
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use('/api', router);
+app.use(ErrorHandler);
 
-try {
-  sequelize.authenticate();
-  console.log('Connection has been established successfully.');
-} catch (error) {
-  console.error('Unable to connect to the database:', error);
-}
+const start = async () => {
+  try {
+    await database.authenticate();
+    await database.sync({ alter: true });
+    app.listen(PORT, () => console.log('Server started on', PORT));
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+start();

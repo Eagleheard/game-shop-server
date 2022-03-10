@@ -1,17 +1,23 @@
 {
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cloudinary": "^1.28.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "esm": "^3.2.25",
     "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.16.2"
   },
   "name": "game-shop-server",
   "version": "1.0.0",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./index.js"
+    "dev": "nodemon -r esm -r module-alias/register"
   },
   "keywords": [],
   "author": "",
@@ -19,5 +25,14 @@
   "description": "",
   "devDependencies": {
     "prettier": "2.5.1"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@controllers": "src/Controllers",
+    "@errors": "src/Errors",
+    "@models": "src/Models",
+    "@routes": "src/Routes",
+    "@middleware": "src/Middleware",
+    "@config": "src/Config"
   }
 }
