@@ -1,17 +1,52 @@
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
 import userModule from '@models/User/user.js';
 import AppError from '@errors/AppError.js';
 
+const createJwt = (id, email, role) => {
+  return jwt.sign({ id, email, role }, process.env.SECRET_KEY, { expiresIn: '24h' });
+};
+
 class User {
-  async signup(req, res, next) {
-    res.status(200).send('Sign Up');
+  async signup({ body: { email, password, role = 'USER' } }, res, next) {
+    try {
+      if (!email || !password) {
+        next(AppError.badRequest('Empty email or password'));
+      }
+      if (role !== 'USER') {
+        next(AppError.forbidden('You can register only as USER'));
+      }
+      const candidate = await userModule.getOne({ where: { email } });
+      if (candidate) {
+        next(AppError.badRequest('Email already registered'));
+      }
+      const hash = await bcrypt.hash(password, 5);
+      const user = await userModule.create({ email, password: hash, role });
+      const token = createJwt(user.id, user.email, user.role);
+      return res.status(200).json({ token });
+    } catch (e) {
+      next(AppError.internalServerError(e.message));
+    }
   }
 
-  async login(req, res, next) {
-    res.status(200).send('Log in');
+  async login({ body: { email, password } }, res, next) {
+    try {
+      const user = await userModule.getOne({ where: { email } });
+      let compare = bcrypt.compareSync(password, user.password);
+      if (!compare) {
+        next(AppError.badRequest('Wrong password'));
+      }
+      const token = createJwt(user.id, user.email, user.role);
+      return res.status(200).json({ token });
+    } catch (e) {
+      next(AppError.internalServerError(e.message));
+    }
   }
 
-  async check(req, res, next) {
-    res.status(200).send('Verification');
+  async check({ id, email, role }, res, next) {
+    const token = createJwt(id, email, role);
+    return res.status(200).json({ token });
   }
 
   async getAll(req, res, next) {

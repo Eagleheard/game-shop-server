@@ -5,7 +5,7 @@ const User = database.define('user', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    utoIncrement: true,
+    autoIncrement: true,
   },
   email: {
     type: DataTypes.STRING,
