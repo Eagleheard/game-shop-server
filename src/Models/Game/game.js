@@ -45,7 +45,7 @@ class Game {
       where.disk = disk;
     }
     if (count) {
-      where.count = count;
+      where.count = {[Op.gte]: [count]};
     }
     if (isNew) {
       where.isNew = isNew;
