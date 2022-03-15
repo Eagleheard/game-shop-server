@@ -38,7 +38,14 @@ class User {
         next(appError.badRequest('Wrong password'));
       }
       const token = createJwt(user.id, user.email, user.role);
-      return res.status(200).json({ token });
+      return res
+      .status(200)
+      .cookie("access_token",
+        token, {
+        httpOnly: true,
+        }
+      )
+      .json({ message: "Logged in successfully 😊 👌" });
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
