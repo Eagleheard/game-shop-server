@@ -6,9 +6,10 @@ import userController from '@controllers/user.js';
 
 const router = new express.Router();
 
-router.post('/signup', userController.signup);
-router.post('/login', userController.login);
+router.put('/signup', userController.signup);
+router.put('/login', userController.login);
 
+router.get('/auth', authMiddleware, userController.check);
 router.get('/', authMiddleware, adminMiddleware, userController.getAll);
 router.get('/:id([0-9]+)', authMiddleware, adminMiddleware, userController.getById);
 router.post('/', authMiddleware, adminMiddleware, userController.create);

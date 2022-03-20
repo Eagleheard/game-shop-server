@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import AppError from '@errors/AppError.js';
+import AppError from '@errors/appError.js';
 
 export const authMiddleware = (req, res, next) => {
   try {
@@ -9,9 +9,9 @@ export const authMiddleware = (req, res, next) => {
       next(AppError.unauthorized('Need authorization'));
     }
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.auth = decoded;
+    req.user = decoded;
     next();
   } catch (e) {
-    next(AppError.internalServerError(e.message));
+    next(AppError.unauthorized('Need authorization'));
   }
 };
