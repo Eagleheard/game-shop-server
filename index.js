@@ -27,6 +27,7 @@ const corsOptions = {
     'Authorization',
     'X-Requested-With',
     'device-remember-token',
+    'Access-Control-Allow-Credentials',
     'Access-Control-Allow-Origin',
     'Origin',
     'Accept',

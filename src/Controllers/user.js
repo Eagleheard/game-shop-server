@@ -5,7 +5,7 @@ import userModule from '@models/User/user.js';
 import AppError from '@errors/appError.js';
 
 const createJwt = (id, email, role, name, lastName) => {
-  return jwt.sign({ id, email, name, lastName, role }, process.env.SECRET_KEY, {
+  return jwt.sign({ id, email, role, name, lastName }, process.env.SECRET_KEY, {
     expiresIn: '24h',
   });
 };
@@ -42,7 +42,7 @@ class User {
       if (!compare) {
         next(AppError.badRequest('Wrong password'));
       }
-      const token = createJwt(user.id, user.email, user.role);
+      const token = createJwt(user.id, user.email, user.role, user.name);
       return res
         .status(200)
         .cookie('access_token', token, {
@@ -54,10 +54,17 @@ class User {
     }
   }
 
+  async logout(req, res) {
+    return res
+      .status(200)
+      .cookie('access_token', 'none')
+      .json({message: 'deleted'});
+  }
+
   async check(req, res) {
     return res
       .status(200)
-      .json({ user: { id: req.user.id, email: req.user.email, role: req.user.role,} });
+      .json({ id: req.user.id, email: req.user.email, role: req.user.role, name: req.user.name });
   }
 
   async getAll(req, res, next) {

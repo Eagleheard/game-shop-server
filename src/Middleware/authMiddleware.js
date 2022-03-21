@@ -4,7 +4,7 @@ import AppError from '@errors/appError.js';
 
 export const authMiddleware = (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.cookie.split('=')[1];
     if (!token) {
       next(AppError.unauthorized('Need authorization'));
     }

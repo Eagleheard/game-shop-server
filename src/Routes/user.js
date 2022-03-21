@@ -9,6 +9,7 @@ const router = new express.Router();
 router.put('/signup', userController.signup);
 router.put('/login', userController.login);
 
+router.put('/logout', authMiddleware, userController.logout);
 router.get('/auth', authMiddleware, userController.check);
 router.get('/', authMiddleware, adminMiddleware, userController.getAll);
 router.get('/:id([0-9]+)', authMiddleware, adminMiddleware, userController.getById);
