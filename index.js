@@ -1,6 +1,7 @@
 import express from 'express';
 import config from 'dotenv/config';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import { database } from '@config/database.js';
 import ErrorHandler from '@middleware/errorHandler.js';
@@ -32,6 +33,7 @@ const corsOptions = {
   ],
 };
 
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/api', router);
