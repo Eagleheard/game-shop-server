@@ -3,9 +3,8 @@ import BasketController from '@controllers/basket.js';
 
 const router = new express.Router();
 
-router.get('/', BasketController.getOne);
-router.put('/append', BasketController.append);
-router.put('/:gameId([0-9]+)/remove', BasketController.remove);
-router.put('/clear', BasketController.clear);
+router.get('/', BasketController.getGames)
+router.post('/', BasketController.addGame)
+router.delete('/:id', BasketController.deleteGame);
 
 export default router;
