@@ -1,10 +1,10 @@
 import { Basket as BasketModel } from '@models/Basket/index.js';
+
 import { Game as GameModel } from '@models/Game/index.js';
-import { BasketGame as BasketGameModel } from '@models/BasketGame/index.js';
 
 class Basket {
-  create() {
-    return BasketModel.create();
+  create(params) {
+    return BasketModel.create(params);
   }
 
   getById(basketId) {

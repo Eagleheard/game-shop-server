@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import appError from '@errors/appError.js';
 
 import BasketModule from "@models/Basket/basket.js";
-import BasketGameModule from "@models/BasketGame/basketGame.js";
 
 class Basket {
     async addGame(req, res, next) {
@@ -11,8 +10,7 @@ class Basket {
             const {id} = req.body;
             const token = req.headers.authorization.split(' ')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            const basket = await BasketModule.getById({where: {userId: user.id}});
-            await BasketGameModule.create({basketId : basket.id, deviceId: id});
+            const basket = await BasketModule.create({id: user.id});
             return res.json("Game added in card");
         } catch (e) {
             next(appError.internalServerError(e.message));
