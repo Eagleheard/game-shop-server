@@ -1,10 +1,11 @@
 import { Basket as BasketModel } from '@models/Basket/index.js';
+import { Op } from 'sequelize';
 
 import { Game as GameModel } from '@models/Game/index.js';
 
 class Basket {
-  create(params) {
-    return BasketModel.create(params);
+  create({ gameId, userId }) {
+    return BasketModel.create( {gameId: gameId, userId: userId});
   }
 
   getById(basketId) {
@@ -15,8 +16,11 @@ class Basket {
     return basket;
   }
 
-  getOne(params) {
-    return BasketModel.findOne(params);
+  getOne({userId}) {
+    return BasketModel.findOne({ 
+      where: {
+        userId: userId,
+      }});
   }
 
   getAll(params) {

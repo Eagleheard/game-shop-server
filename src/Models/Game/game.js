@@ -62,6 +62,17 @@ class Game {
     });
   }
 
+  getOne({ gameId, value }) {
+    const where = {};
+    if (gameId) {
+      where.id = gameId;
+    }
+    if (value) {
+      where.count = value;
+    }
+    return gameModule.findOne({ where });
+  }
+
   getById(id) {
     return gameModule.findByPk(id, {
       include: [

@@ -2,27 +2,34 @@ import jwt from 'jsonwebtoken';
 
 import appError from '@errors/appError.js';
 
-import BasketModule from "@models/Basket/basket.js";
+import gameModule from '@models/Game/game.js';
+import basketModule from "@models/Basket/basket.js";
 
 class Basket {
-    async addGame(req, res, next) {
+    async addGame({ query }, res, next) {
         try {
-            const {id} = req.body;
-            const token = req.headers.authorization.split(' ')[1];
+            const token = req.headers.cookie.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            const basket = await BasketModule.create({id: user.id});
-            return res.json("Game added in card");
+            const game = await gameModule.getOne(query);
+            if (!game) {
+                next(appError.badRequest('Required quantity does not exist'))
+            }
+            const options = { ...game, ...user }
+            const basket = await basketModule.create(options);
+            return res.json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
         }
     }
 
-    async getGames(req, res, next) {
+    async getBasket(req, res, next) {
         try {
-            const token = req.headers.authorization.split(' ')[1];
+            const token = req.headers.authorization.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            const {id} = await BasketModule.getOne({where: {userId: user.id}});
-            const basket = await BasketGameModule.getAll({where: {basketId: id}});
+            const basket = await basketModule.getOne({ userId: user.id });
+            if (!basket) {
+                basket = await basketModule.create();
+            }
             return res.json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
