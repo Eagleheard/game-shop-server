@@ -26,12 +26,11 @@ class Basket {
         try {
             const token = req.headers.cookie.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            const basket = await basketModule.getOne({ userId: user.id });
-            const game = await gameModule.getOne({gameId: basket.gameId});
+            const basket = await basketModule.getAll({ userId: user.id });
             if (!basket) {
                 basket = await basketModule.create();
             }
-            return res.json({basket, game});
+            return res.json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
         }

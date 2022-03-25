@@ -11,7 +11,16 @@ class Basket {
       where: {
         userId: userId,
       }
-    });
+    })
+  }
+
+  getAll({ userId }) {
+    return basketModel.findAll({
+      where: {
+        userId: userId,
+      },
+      include: {all: true}
+    })
   }
 }
 

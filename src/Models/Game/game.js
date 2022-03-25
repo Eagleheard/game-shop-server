@@ -10,6 +10,7 @@ class Game {
     currentPage,
     authorId,
     genreId,
+    gameId,
     isNew,
     isPreview,
     order,
@@ -21,6 +22,9 @@ class Game {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
     const orderBy = [];
+    if(gameId) {
+      where.id = gameId;
+    }
     if (genreId) {
       where.genreId = genreId;
     }
@@ -75,7 +79,7 @@ class Game {
     return gameModule.findOne({ where });
   }
 
-  getById(id) {
+  getById({ id }) {
     return gameModule.findByPk(id, {
       include: [
         { model: genreModule, as: 'genre' },
