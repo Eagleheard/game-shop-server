@@ -1,3 +1,6 @@
+import Sequelize from "sequelize";
+import { Op } from "sequelize";
+
 import { Game as gameModule } from './index.js';
 import { Genre as genreModule } from '@models/Genre/index.js';
 import { Author as authorModule } from '@models/Author/index.js';
@@ -14,7 +17,10 @@ class Game {
     digital,
     disk,
     count,
-    price,
+    minPrice,
+    maxPrice,
+    authorName,
+    genreName,
   }) {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
@@ -25,8 +31,12 @@ class Game {
     if (authorId) {
       where.authorId = authorId;
     }
-    if (price) {
-      where.price = price;
+    if (minPrice && maxPrice) {
+      where.price = {[Op.between]: [minPrice, maxPrice]};
+    } else if (minPrice) {
+      where.price = {[Op.gte]: [minPrice]};
+    } else if (maxPrice) {
+      where.price = {[Op.lte]: [maxPrice]};
     }
     if (digital) {
       where.digital = digital;
@@ -35,7 +45,7 @@ class Game {
       where.disk = disk;
     }
     if (count) {
-      where.count = count;
+      where.count = {[Op.gte]: [count]};
     }
     if (isNew) {
       where.isNew = isNew;
@@ -46,11 +56,13 @@ class Game {
     if (isPreview) {
       where.isPreview = isPreview;
     }
-    if (price) {
-      where.price = price;
+    if (authorName) {
+      where['$author.name$'] = authorName;
     }
-
-    return gameModule.findAll({
+    if (genreName) {
+      where['$genre.name$'] = genreName;
+    }
+    return gameModule.findAndCountAll({
       limit: dataLimit,
       offset,
       order: orderBy,
