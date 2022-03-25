@@ -19,7 +19,7 @@ class Basket {
       where: {
         userId: userId,
       },
-      include: {all: true}
+      include: {model: gameModel, attributes: ['id', 'name', 'count', 'price']}
     })
   }
 }
