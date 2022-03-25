@@ -3,8 +3,8 @@ import { database } from '@config/database.js';
 
 import { Genre } from '@models/Genre/index.js';
 import { Author } from '@models/Author/index.js';
-import User from '@models/User/index.js';
 import { Basket } from '@models/Basket/index.js';
+import { BasketGame } from '@models/BasketGame/index.js';
 
 export const Game = database.define('game', {
   id: {
@@ -56,6 +56,9 @@ Game.belongsTo(Genre, { foreignKey: 'genreId' });
 Author.hasMany(Game, { onDelete: 'CASCADE' });
 Game.belongsTo(Author, { foreignKey: 'authorId' });
 
-User.belongsToMany(Game, { through: Basket, onDelete: 'RESTRICT', foreignKey: 'userId' });
-Game.belongsToMany(User, { through: Basket, onDelete: 'RESTRICT', foreignKey: 'gameId' });
+Basket.belongsToMany(Game, { through: BasketGame, onDelete: 'RESTRICT' });
+Game.belongsToMany(Basket, { through: BasketGame, onDelete: 'RESTRICT' });
+
+Game.hasMany(BasketGame);
+BasketGame.belongsTo(Game);
 
