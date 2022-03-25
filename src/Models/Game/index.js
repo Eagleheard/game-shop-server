@@ -56,5 +56,6 @@ Game.belongsTo(Genre, { foreignKey: 'genreId' });
 Author.hasMany(Game, { onDelete: 'CASCADE' });
 Game.belongsTo(Author, { foreignKey: 'authorId' });
 
-Game.belongsToMany(User, { through: Basket });
-User.belongsToMany(Game, { through: Basket });
+User.belongsToMany(Game, { through: Basket, onDelete: 'RESTRICT', foreignKey: 'userId' });
+Game.belongsToMany(User, { through: Basket, onDelete: 'RESTRICT', foreignKey: 'gameId' });
+

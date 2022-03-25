@@ -6,15 +6,15 @@ import gameModule from '@models/Game/game.js';
 import basketModule from "@models/Basket/basket.js";
 
 class Basket {
-    async addGame({ query }, res, next) {
+    async addGame(req, res, next) {
         try {
             const token = req.headers.cookie.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            const game = await gameModule.getOne(query);
+            const game = await gameModule.getOne(req.query);
             if (!game) {
                 next(appError.badRequest('Required quantity does not exist'))
             }
-            const options = { ...game, ...user }
+            const options = { game, user }
             const basket = await basketModule.create(options);
             return res.json(basket);
         } catch (e) {
@@ -24,13 +24,14 @@ class Basket {
 
     async getBasket(req, res, next) {
         try {
-            const token = req.headers.authorization.split('=')[1];
+            const token = req.headers.cookie.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
             const basket = await basketModule.getOne({ userId: user.id });
+            const game = await gameModule.getOne({gameId: basket.gameId});
             if (!basket) {
                 basket = await basketModule.create();
             }
-            return res.json(basket);
+            return res.json({basket, game});
         } catch (e) {
             next(appError.internalServerError(e.message));
         }

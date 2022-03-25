@@ -1,3 +1,5 @@
+import { Op } from 'sequelize';
+
 import { Game as gameModule } from './index.js';
 import { Genre as genreModule } from '@models/Genre/index.js';
 import { Author as authorModule } from '@models/Author/index.js';
@@ -68,7 +70,7 @@ class Game {
       where.id = gameId;
     }
     if (value) {
-      where.count = value;
+      where.count = {[Op.gte]: [value]};
     }
     return gameModule.findOne({ where });
   }
