@@ -6,5 +6,8 @@ export const Basket = database.define('basket', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-      }
+      },
+    count: {
+      type: DataTypes.INTEGER,
+    }
 });

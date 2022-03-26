@@ -14,8 +14,8 @@ class Basket {
             if (!game) {
                 next(appError.badRequest('Required quantity does not exist'))
             }
-            const options = { game, user }
-            const basket = await basketModule.create(options);
+            const options = { game, user, count: req.query.count }
+            const basket = await basketModule.addGame(options);
             return res.json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
@@ -26,11 +26,11 @@ class Basket {
         try {
             const token = req.headers.cookie.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            const basket = await basketModule.getAll({ userId: user.id });
+            let basket = await basketModule.getOne({ userId: user.id });
             if (!basket) {
                 basket = await basketModule.create();
             }
-            return res.json(basket);
+            return res.status(200).json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
         }
