@@ -16,7 +16,7 @@ class Basket {
             }
             const options = { game, user, count: req.query.value }
             const basket = await basketModule.getOne({ game, user});
-            if (basket) {
+            if (basket.count !== game.count) {
                 basket.increment('count', { by: req.query.value })
             } else {
                 basket = await basketModule.create(options);
