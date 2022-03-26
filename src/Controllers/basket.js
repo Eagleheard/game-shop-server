@@ -14,8 +14,13 @@ class Basket {
             if (!game) {
                 next(appError.badRequest('Required quantity does not exist'))
             }
-            const options = { game, user, count: req.query.count }
-            const basket = await basketModule.addGame(options);
+            const options = { game, user, count: req.query.value }
+            const basket = await basketModule.getOne({ game, user});
+            if (basket) {
+                basket.increment('count', { by: req.query.value })
+            } else {
+                basket = await basketModule.create(options);
+            }
             return res.json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
@@ -26,7 +31,7 @@ class Basket {
         try {
             const token = req.headers.cookie.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            let basket = await basketModule.getOne({ userId: user.id });
+            let basket = await basketModule.getAll({ userId: user.id });
             if (!basket) {
                 basket = await basketModule.create();
             }
@@ -38,12 +43,12 @@ class Basket {
 
     async deleteGame(req, res, next) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             const user = req.user;
 
-            await Basket.findOne({where: {userId: user.id}}).then(async userBasket => {
-                if(userBasket.userId === user.id) {
-                    await BasketDevice.destroy({where: {basketId: userBasket.id, deviceId: id}})
+            await Basket.findOne({ where: { userId: user.id } }).then(async userBasket => {
+                if (userBasket.userId === user.id) {
+                    await BasketDevice.destroy({ where: { basketId: userBasket.id, deviceId: id } })
                 }
                 return res.json(`You haven't access for delete the game${id}) from basket that didn't belong to you`);
             });

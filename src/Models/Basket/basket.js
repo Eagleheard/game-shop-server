@@ -2,18 +2,20 @@ import { Basket as basketModel } from '@models/Basket/index.js';
 import { Game as gameModel } from '@models/Game/index.js';
 
 class Basket {
-  create() {
-    return basketModel.create();
+
+  create({ game, user, count }) {
+    return basketModel.create({gameId: game.id, userId: user.id, count: count});
   }
 
-  addGame({ game, user }) {
-    return basketModel.create({gameId: game.id, userId: user.id});
-  }
+  increment({ count }) {
+    return basketModel.increment('count', {by: count})
+}
 
-  getOne({ userId }) {
+  getOne({ user, game }) {
     return basketModel.findOne({
       where: {
-        userId: userId,
+        userId: user.id,
+        gameId: game.id
       },
       include: {model: gameModel, attributes: ['id', 'name', 'count', 'price']}
     })
