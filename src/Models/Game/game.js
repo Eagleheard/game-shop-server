@@ -22,7 +22,7 @@ class Game {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
     const orderBy = [];
-    if(gameId) {
+    if (gameId) {
       where.id = gameId;
     }
     if (genreId) {
@@ -74,7 +74,7 @@ class Game {
       where.id = gameId;
     }
     if (value) {
-      where.count = {[Op.gte]: [value]};
+      where.count = { [Op.gte]: [value] };
     }
     return gameModule.findOne({ where });
   }

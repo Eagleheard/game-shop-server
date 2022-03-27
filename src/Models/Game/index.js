@@ -61,4 +61,3 @@ User.belongsToMany(Game, { through: Basket, onDelete: 'RESTRICT' });
 
 Game.hasMany(Basket);
 Basket.belongsTo(Game);
-
