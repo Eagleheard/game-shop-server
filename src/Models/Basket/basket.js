@@ -4,12 +4,12 @@ import { Game as gameModel } from '@models/Game/index.js';
 class Basket {
 
   create({ game, user, count }) {
-    return basketModel.create({gameId: game.id, userId: user.id, count: count});
+    return basketModel.create({
+      gameId: game.id, 
+      userId: user.id, 
+      count: count,
+    });
   }
-
-  increment({ count }) {
-    return basketModel.increment('count', {by: count})
-}
 
   getOne({ user, game }) {
     return basketModel.findOne({
@@ -21,13 +21,26 @@ class Basket {
     })
   }
 
-  getAll({ userId }) {
+  getAll({ user }) {
     return basketModel.findAll({
       where: {
-        userId: userId,
+        userId: user.id,
       },
       include: {model: gameModel, attributes: ['id', 'name', 'count', 'price']}
     })
+  }
+
+  delete({ user, game }) {
+    const where = {};
+    if (user) {
+      where.userId = user.id;
+    }
+    if (game) {
+      where.gameId = game.id
+    }
+    return basketModel.destroy( {
+      where
+    });
   }
 }
 

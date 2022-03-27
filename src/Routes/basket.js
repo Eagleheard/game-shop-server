@@ -5,6 +5,6 @@ const router = new express.Router();
 
 router.get('/', BasketController.getBasket)
 router.post('/', BasketController.addGame)
-router.delete('/:id', BasketController.deleteGame);
+router.delete('/', BasketController.deleteBasket);
 
 export default router;

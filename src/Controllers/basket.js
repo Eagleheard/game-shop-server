@@ -15,12 +15,36 @@ class Basket {
                 next(appError.badRequest('Required quantity does not exist'))
             }
             const options = { game, user, count: req.query.value }
-            const basket = await basketModule.getOne({ game, user});
-            if (basket.count !== game.count) {
-                basket.increment('count', { by: req.query.value })
-            } else {
+            let basket = await basketModule.getOne({ game, user });
+            if (!basket) {
                 basket = await basketModule.create(options);
+                return res.status(201).json(basket);
             }
+            if (basket && parseInt(basket.count) + parseInt(req.query.value) <= parseInt(game.count)) {
+                basket.increment('count', { by: req.query.value })
+                return res.status(201).json(basket);
+            }
+            if (parseInt(basket.count) + parseInt(req.query.value) > parseInt(game.count)) {
+                next(appError.badRequest('Required quantity does not exist'))
+            }
+        } catch (e) {
+            next(appError.internalServerError(e.message));
+        }
+    }
+
+    async removeGame(req, res, next) {
+        try {
+            const token = req.headers.cookie.split('=')[1];
+            const user = jwt.verify(token, process.env.SECRET_KEY);
+            const game = await gameModule.getOne(req.query);
+            if (!game) {
+                next(appError.badRequest('Required quantity does not exist'))
+            }
+            const basket = await basketModule.getAll({ user });
+            if (!basket) {
+                next(appError.badRequest('Card not found'))
+            }
+            await basketModule.delete({ user, game });
             return res.json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
@@ -31,7 +55,7 @@ class Basket {
         try {
             const token = req.headers.cookie.split('=')[1];
             const user = jwt.verify(token, process.env.SECRET_KEY);
-            let basket = await basketModule.getAll({ userId: user.id });
+            let basket = await basketModule.getAll({ user });
             if (!basket) {
                 basket = await basketModule.create();
             }
@@ -41,18 +65,16 @@ class Basket {
         }
     }
 
-    async deleteGame(req, res, next) {
+    async deleteBasket(req, res, next) {
         try {
-            const { id } = req.params;
-            const user = req.user;
-
-            await Basket.findOne({ where: { userId: user.id } }).then(async userBasket => {
-                if (userBasket.userId === user.id) {
-                    await BasketDevice.destroy({ where: { basketId: userBasket.id, deviceId: id } })
-                }
-                return res.json(`You haven't access for delete the game${id}) from basket that didn't belong to you`);
-            });
-            return res.json("Game deleted form your card");
+            const token = req.headers.cookie.split('=')[1];
+            const user = jwt.verify(token, process.env.SECRET_KEY);
+            const basket = await basketModule.getAll({ user });
+            if (!basket) {
+                next(appError.badRequest('Card not found'))
+            }
+            await basketModule.delete({ user });
+            return res.json(basket);
         } catch (e) {
             next(appError.internalServerError(e.message));
         }
