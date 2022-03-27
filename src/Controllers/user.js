@@ -24,9 +24,8 @@ class User {
         next(AppError.badRequest('Email already registered'));
       }
       const hash = await bcrypt.hash(password, 5);
-      const user = await userModule.create({ name, lastName, email, password: hash, role });
-      const token = createJwt(user.name, user.lastName, user.id, user.email, user.role);
-      return res.status(200).json({ token });
+      await userModule.create({ name, lastName, email, password: hash, role });
+      return res.status(200).json({ message: 'Signed Up successfully' });
     } catch (e) {
       next(AppError.internalServerError(e.message));
     }
@@ -40,7 +39,7 @@ class User {
       }
       let compare = bcrypt.compareSync(password, user.password);
       if (!compare) {
-        next(AppError.badRequest('Wrong password'));
+        next(AppError.badRequest('Wrong email or password'));
       }
       const token = createJwt(user.id, user.email, user.role, user.name);
       return res

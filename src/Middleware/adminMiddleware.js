@@ -3,7 +3,7 @@ import AppError from '../errors/appError.js';
 export const adminMiddleware = (req, res, next) => {
   try {
     if (req.user.role !== 'ADMIN') {
-      next(AppError.forbidden('Only for administrator'));
+      next(AppError.forbidden('You dont have permission for this'));
     }
     next();
   } catch (e) {
