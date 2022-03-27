@@ -38,9 +38,7 @@ class Basket {
     if (game) {
       where.gameId = game.id
     }
-    return basketModel.destroy( {
-      where
-    });
+    return basketModel.destroy({ where });
   }
 }
 
