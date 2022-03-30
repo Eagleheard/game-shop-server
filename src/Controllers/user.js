@@ -1,17 +1,69 @@
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
 import userModule from '@models/User/user.js';
-import AppError from '@errors/AppError.js';
+import AppError from '@errors/appError.js';
+
+const createJwt = (id, email, role, name, lastName) => {
+  return jwt.sign({ id, email, role, name, lastName }, process.env.SECRET_KEY, {
+    expiresIn: '24h',
+  });
+};
 
 class User {
-  async signup(req, res, next) {
-    res.status(200).send('Sign Up');
+  async signup({ body: { name, lastName, email, password, role = 'USER' } }, res, next) {
+    try {
+      if (!email || !password) {
+        next(AppError.badRequest('Empty email or password'));
+      }
+      if (role !== 'USER') {
+        next(AppError.forbidden('You can register only as USER'));
+      }
+      const candidate = await userModule.getOne({ where: { email } });
+      if (candidate) {
+        next(AppError.badRequest('Email already registered'));
+      }
+      const hash = await bcrypt.hash(password, 5);
+      await userModule.create({ name, lastName, email, password: hash, role });
+      return res.status(200).json({ message: 'Signed Up successfully' });
+    } catch (e) {
+      next(AppError.internalServerError(e.message));
+    }
   }
 
-  async login(req, res, next) {
-    res.status(200).send('Log in');
+  async login({ body: { email, password } }, res, next) {
+    try {
+      const user = await userModule.getOne({ where: { email } });
+      if (!user) {
+        next(AppError.notFound('User not found'));
+      }
+      let compare = bcrypt.compareSync(password, user.password);
+      if (!compare) {
+        next(AppError.badRequest('Wrong email or password'));
+      }
+      const token = createJwt(user.id, user.email, user.role, user.name);
+      return res
+        .status(200)
+        .cookie('access_token', token, {
+          httpOnly: true,
+        })
+        .json({ id: user.id, email: user.email, name: user.name });
+    } catch (e) {
+      next(AppError.internalServerError(e.message));
+    }
   }
 
-  async check(req, res, next) {
-    res.status(200).send('Verification');
+  async logout(req, res) {
+    return res
+      .status(200)
+      .cookie('access_token', 'none')
+      .json({message: 'deleted'});
+  }
+
+  async check(req, res) {
+    return res
+      .status(200)
+      .json({ id: req.user.id, email: req.user.email, role: req.user.role, name: req.user.name });
   }
 
   async getAll(req, res, next) {
@@ -37,7 +89,7 @@ class User {
       }
       res.status(200).json(user);
     } catch (e) {
-      next(AppError.internalServerError(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
@@ -46,37 +98,37 @@ class User {
       const user = await userModule.create(req.body);
       res.status(201).json(user);
     } catch (e) {
-      next(AppError.internalServerError(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async update(req, res, next) {
     try {
       if (!req.params.id) {
-        next(AppError.badRequest('Id was not set'));
+        next(appError.badRequest('Id was not set'));
       }
       const user = await userModule.update(req.params.id, req.body);
       if (!user) {
-        next(AppError.notFound('Selected user does not exist'));
+        next(appError.notFound('Selected user does not exist'));
       }
       res.status(200).json(user);
     } catch (e) {
-      next(AppError.internalServerError(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 
   async delete(req, res, next) {
     try {
       if (!req.params.id) {
-        next(AppError.badRequest('Id was not set'));
+        next(appError.badRequest('Id was not set'));
       }
       const user = await userModule.delete(req.params.id);
       if (!user) {
-        next(AppError.notFound('Selected user does not exist'));
+        next(appError.notFound('Selected user does not exist'));
       }
       res.status(200).json(user);
     } catch (e) {
-      next(AppError.internalServerError(e.message));
+      next(appError.internalServerError(e.message));
     }
   }
 }

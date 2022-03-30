@@ -5,8 +5,12 @@ class User {
     return userModule.findAll();
   }
 
-  getOne(id) {
+  getById(id) {
     return userModule.findByPk(id);
+  }
+
+  getOne(data) {
+    return userModule.findOne(data);
   }
 
   create(data) {
