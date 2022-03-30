@@ -5,6 +5,10 @@ class AppError extends Error {
     this.message = message;
   }
 
+  static unauthorized(message) {
+    return new AppError(401, message);
+  }
+
   static badRequest(message) {
     return new AppError(400, message);
   }

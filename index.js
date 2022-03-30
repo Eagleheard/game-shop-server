@@ -27,6 +27,7 @@ const corsOptions = {
     'Authorization',
     'X-Requested-With',
     'device-remember-token',
+    'Access-Control-Allow-Credentials',
     'Access-Control-Allow-Origin',
     'Origin',
     'Accept',
@@ -37,6 +38,7 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/api', router);
+app.use(cookieParser());
 app.use(ErrorHandler);
 
 const start = async () => {
