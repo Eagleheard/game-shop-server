@@ -74,7 +74,7 @@ class Basket {
       const game = await gameModule.getOne(req.params);
       const basket = await basketModule.getAll({ user });
       if (!basket) {
-        next(appError.badRequest('Card not found'));
+        next(appError.badRequest('Cart not found'));
       }
       await basketModule.delete({ user, game });
       return res.json(basket);
@@ -83,13 +83,13 @@ class Basket {
     }
   }
 
-  async deleteBasket(req, res, next) {
+  async removeAllGames(req, res, next) {
     try {
       const token = req.headers.cookie.split('=')[1];
       const user = jwt.verify(token, process.env.SECRET_KEY);
       const basket = await basketModule.getAll({ user });
       if (!basket) {
-        next(appError.badRequest('Card not found'));
+        next(appError.badRequest('Cart not found'));
       }
       await basketModule.delete({ user });
       return res.json(basket);
