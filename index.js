@@ -2,13 +2,18 @@ import express from 'express';
 import config from 'dotenv/config';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { Server } from 'socket.io';
+import http from 'http';
 
+import basketModule from '@models/Basket/basket.js';
+import gameModule from '@models/Game/game.js';
 import { database } from '@config/database.js';
 import ErrorHandler from '@middleware/errorHandler.js';
 import router from '@routes/index.js';
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+const server = http.createServer(app);
 
 var whitelist = process.env.WHITELIST;
 const corsOptions = {
@@ -34,6 +39,14 @@ const corsOptions = {
   ],
 };
 
+const io = new Server(server, {
+  cors: {
+    origin: corsOptions,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  },
+});
+
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -44,8 +57,18 @@ app.use(ErrorHandler);
 const start = async () => {
   try {
     await database.authenticate();
-    await database.sync({ alter: true });
-    app.listen(PORT, () => console.log('Server started on', PORT));
+    await database.sync();
+    io.on('connection', (socket) => {
+      socket.on('game', async (id) => {
+        const selectedGame = await gameModule.getById(id);
+        socket.emit('selectedGame', selectedGame);
+      });
+      socket.on('cart', async (id) => {
+        const clearedCart = await basketModule.getAll({ user: { id } });
+        setTimeout(() => socket.emit('clearedCart', clearedCart), 60000);
+      });
+    });
+    server.listen(PORT, () => console.log('Server started on', PORT));
   } catch (e) {
     console.log(e);
   }

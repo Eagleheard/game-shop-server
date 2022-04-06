@@ -54,10 +54,7 @@ class User {
   }
 
   async logout(req, res) {
-    return res
-      .status(200)
-      .cookie('access_token', 'none')
-      .json({message: 'deleted'});
+    return res.status(200).cookie('access_token', 'none').json({ message: 'deleted' });
   }
 
   async check(req, res) {

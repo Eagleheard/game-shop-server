@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-
 import appError from '@errors/appError.js';
 
 import gameModule from '@models/Game/game.js';
@@ -8,30 +6,43 @@ import basketModule from '@models/Basket/basket.js';
 class Basket {
   async addGameToCart(req, res, next) {
     try {
-      const token = req.headers.cookie.split('=')[1];
-      const user = jwt.verify(token, process.env.SECRET_KEY);
-      const game = await gameModule.getOne(req.query);
+      const user = req.user;
+      const game = await gameModule.getById(req.query.gameId);
       if (!game) {
-        next(appError.badRequest('Required quantity does not exist'));
+        next(appError.notFound('Game does not exists'));
       }
-      const options = { game, user, count: req.query.value };
+      const options = { game, user, quantity: req.query.value };
       let basket = await basketModule.getOne({ game, user });
       if (!basket) {
         await basketModule.create(options);
-        game.decrement('count', { by: req.query.value });
-        game.reload();
+        if (game.disk) {
+          game.decrement('count', { by: req.query.value });
+        }
         basket = await basketModule.getOne({ game, user });
-        return res.status(201).json(basket);
-      }
-      if (parseInt(req.query.value) <= parseInt(game.count)) {
-        await basket.increment('count', { by: req.query.value });
-        await game.decrement('count', { by: req.query.value });
-        await game.reload();
-        await basket.reload();
-        return res.status(201).json(basket);
       } else {
         next(appError.badRequest('Required quantity does not exist'));
       }
+      return res.status(201).json(basket);
+    } catch (e) {
+      next(appError.internalServerError(e.message));
+    }
+  }
+
+  async incrementGameToCart(req, res, next) {
+    try {
+      const user = req.user;
+      const game = await gameModule.getOne({ gameId: req.query.gameId });
+      if (!game) {
+        next(appError.notFound('Games does not exists'));
+      }
+      let basket = await basketModule.getOne({ game, user });
+      if (parseInt(game.count) !== 0) {
+        await basket.increment('quantity', { by: 1 });
+        await game.decrement('count', { by: 1 });
+      } else {
+        next(appError.badRequest('Required quantity does not exist'));
+      }
+      return res.status(200).json(basket);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -39,22 +50,20 @@ class Basket {
 
   async decrementGameFromCart(req, res, next) {
     try {
-      const token = req.headers.cookie.split('=')[1];
-      const user = jwt.verify(token, process.env.SECRET_KEY);
-      const game = await gameModule.getOne({gameId: req.query.gameId});
+      const user = req.user;
+      const game = await gameModule.getOne({ gameId: req.query.gameId });
       if (!game) {
-        next(appError.badRequest('Required quantity does not exist'));
+        next(appError.notFound('Games does not exists'));
       }
-      const basket = await basketModule.getOne({ game, user });
-      if (parseInt(req.query.value) > 0 && parseInt(basket.count) !== 0) {
-        await basket.decrement('count', { by: req.query.value });
-        await game.increment('count', { by: req.query.value });
+      let basket = await basketModule.getOne({ game, user });
+      if (parseInt(basket.quantity) !== 1) {
+        await basket.decrement('quantity', { by: 1 });
+        await game.increment('count', { by: 1 });
         await basket.reload();
-        await game.reload();
-        return res.status(201).json(basket);
       } else {
-        next(appError.badRequest('Quantity cannot be less than zero'));
+        await basketModule.delete({ user, game });
       }
+      return res.status(200).json(basket);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -62,8 +71,7 @@ class Basket {
 
   async getCart(req, res, next) {
     try {
-      const token = req.headers.cookie.split('=')[1];
-      const user = jwt.verify(token, process.env.SECRET_KEY);
+      const user = req.user;
       let basket = await basketModule.getAll({ user });
       if (!basket) {
         basket = await basketModule.create();
@@ -76,15 +84,15 @@ class Basket {
 
   async removeGameFromCart(req, res, next) {
     try {
-      const token = req.headers.cookie.split('=')[1];
-      const user = jwt.verify(token, process.env.SECRET_KEY);
+      const user = req.user;
       const game = await gameModule.getOne(req.params);
       const basket = await basketModule.getOne({ user, game });
       if (!basket) {
         next(appError.badRequest('Cart not found'));
       }
+      await game.increment('count', { by: basket.quantity });
       await basketModule.delete({ user, game });
-      return res.json(basket);
+      return res.status(200).json(basket);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -92,14 +100,17 @@ class Basket {
 
   async removeAllGamesFromCart(req, res, next) {
     try {
-      const token = req.headers.cookie.split('=')[1];
-      const user = jwt.verify(token, process.env.SECRET_KEY);
+      const user = req.user;
       const basket = await basketModule.getAll({ user });
       if (!basket) {
         next(appError.badRequest('Cart not found'));
       }
+      basket.forEach(async (cartGame) => {
+        cartGame = await gameModule.getOne(cartGame);
+        await cartGame.increment('count', { by: basket.quantity });
+      });
       await basketModule.delete({ user });
-      return res.json(basket);
+      return res.status(200).json(basket);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
