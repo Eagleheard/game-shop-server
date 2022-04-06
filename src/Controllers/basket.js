@@ -103,7 +103,7 @@ class Basket {
       const user = req.user;
       const basket = await basketModule.getAll({ user });
       if (!basket) {
-        next(appError.badRequest('Cart not found'));
+        next(appError.notFound('Cart not found'));
       }
       basket.forEach(async (cartGame) => {
         cartGame = await gameModule.getOne(cartGame);
