@@ -1,6 +1,9 @@
 import { DataTypes } from 'sequelize';
 import { database } from '@config/database.js';
 
+import { Achievement } from '@models/Achievement/index';
+import { UserAchievement } from '@models/Achievement/junction';
+
 const User = database.define('user', {
   id: {
     type: DataTypes.INTEGER,
@@ -28,5 +31,11 @@ const User = database.define('user', {
     type: DataTypes.STRING,
   },
 });
+
+Achievement.belongsToMany(User, { through: UserAchievement, onDelete: 'RESTRICT' });
+User.belongsToMany(Achievement, { through: UserAchievement, onDelete: 'RESTRICT' });
+
+User.hasMany(UserAchievement);
+UserAchievement.belongsTo(User);
 
 export default User;
