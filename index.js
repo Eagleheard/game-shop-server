@@ -5,11 +5,10 @@ import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
 import http from 'http';
 
-import basketModule from '@models/Basket/basket.js';
-import gameModule from '@models/Game/game.js';
 import { database } from '@config/database.js';
 import ErrorHandler from '@middleware/errorHandler.js';
 import router from '@routes/index.js';
+import socketConnection from '@config/socket';
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -39,7 +38,7 @@ const corsOptions = {
   ],
 };
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: corsOptions,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -58,16 +57,7 @@ const start = async () => {
   try {
     await database.authenticate();
     await database.sync();
-    io.on('connection', (socket) => {
-      socket.on('game', async (id) => {
-        const selectedGame = await gameModule.getById(id);
-        socket.emit('selectedGame', selectedGame);
-      });
-      socket.on('cart', async (id) => {
-        const clearedCart = await basketModule.getAll({ user: { id } });
-        setTimeout(() => socket.emit('clearedCart', clearedCart), 60000);
-      });
-    });
+    socketConnection();
     server.listen(PORT, () => console.log('Server started on', PORT));
   } catch (e) {
     console.log(e);

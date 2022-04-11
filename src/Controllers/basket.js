@@ -110,7 +110,7 @@ class Basket {
         await cartGame.increment('count', { by: basket.quantity });
       });
       await basketModule.delete({ user });
-      return res.status(200).json(basket);
+      return res.status(200).json({ message: 'Cart is cleared' });
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
