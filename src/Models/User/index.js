@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { database } from '@config/database.js';
 
+import { Order } from '@models/Order/index';
 import { Achievement } from '@models/Achievement/index';
 import { UserAchievement } from '@models/Achievement/junction';
 
@@ -37,5 +38,8 @@ User.belongsToMany(Achievement, { through: UserAchievement, onDelete: 'RESTRICT'
 
 User.hasMany(UserAchievement);
 UserAchievement.belongsTo(User);
+
+User.hasMany(Order, {onDelete: 'SET NULL'})
+Order.belongsTo(User)
 
 export default User;
