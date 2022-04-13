@@ -1,4 +1,3 @@
-import Sequelize from 'sequelize';
 import { Op } from 'sequelize';
 
 import { Game as gameModule } from './index.js';
@@ -11,6 +10,7 @@ class Game {
     currentPage,
     authorId,
     genreId,
+    gameId,
     isNew,
     isPreview,
     order,
@@ -25,6 +25,9 @@ class Game {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
     const orderBy = [];
+    if (gameId) {
+      where.id = gameId;
+    }
     if (genreId) {
       where.genreId = genreId;
     }
@@ -72,6 +75,17 @@ class Game {
         { model: authorModule, as: 'author' },
       ],
     });
+  }
+
+  getOne({ gameId, value }) {
+    const where = {};
+    if (gameId) {
+      where.id = gameId;
+    }
+    if (value) {
+      where.count = { [Op.gte]: [value] };
+    }
+    return gameModule.findOne({ where });
   }
 
   getById(id) {

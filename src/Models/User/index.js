@@ -5,6 +5,7 @@ import { Order } from '@models/Order/index';
 import { Achievement } from '@models/Achievement/index';
 import { UserAchievement } from '@models/Achievement/junction';
 
+
 const User = database.define('user', {
   id: {
     type: DataTypes.INTEGER,
