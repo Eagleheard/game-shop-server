@@ -1,5 +1,5 @@
 import orderModule from '@models/Order/order.js';
-import basketModule from '@models/Basket/basket.js';
+//import basketModule from '@models/Basket/basket.js';
 
 import appError from '@errors/appError.js';
 
@@ -16,52 +16,22 @@ class Order {
         await this.create(req, res, next, 'guest')
     }
 
-    async create(req, res, next, type) {
+    async create(req, { body }, res, next, type) {
         try {
-            const {name, email, phone, address, comment = null} = req.body
-            // данные для создания заказа
-            if (!name) throw new Error('Не указано имя покупателя')
-            if (!email) throw new Error('Не указан email покупателя')
-            if (!phone) throw new Error('Не указан телефон покупателя')
-            if (!address) throw new Error('Не указан адрес доставки')
-
-            let items, userId = null
-            if (type === 'admin') {
-                // когда заказ делает админ, id пользователя и состав заказа в теле запроса
-                if (!req.body.items) throw new Error('Не указан состав заказа')
-                if (req.body.items.length === 0) throw new Error('Не указан состав заказа')
-                items = req.body.items
-                // проверяем существование пользователя
-                userId = req.body.userId ?? null
-                if (userId) {
-                    await UserModel.getOne(userId) // будет исключение, если не найден
-                }
-            } else {
-                // когда заказ делает обычный пользователь (авторизованный или нет), состав
-                // заказа получаем из корзины, а id пользователя из req.auth.id (если есть)
-                if (!req.signedCookies.basketId) throw new Error('Ваша корзина пуста')
-                const basket = await basketModule.getOne(parseInt(req.signedCookies.basketId))
-                if (basket.products.length === 0) throw new Error('Ваша корзина пуста')
-                items = basket.products
-                userId = req.auth?.id ?? null
+            const user = req.user;
+            if (!phone) {
+                next(appError.badRequest('Phone not specified'))
+            } 
+            if (!address) {
+                next(appError.badRequest('Address code not specified'))
+            } 
+            if (!zipCode) {
+                next(appError.badRequest('ZIP code not specified'))
             }
-
-            // все готово, можно создавать
-            const order = await orderModule.create({
-                name, email, phone, address, comment, items, userId
-            })
-            // корзину теперь нужно очистить
-            await basketModule.clear(parseInt(req.signedCookies.basketId))
+            const options = { body, userId: user.id }
+            const order = await orderModule.create(options)
+            //await basketModule.clear(parseInt(req.signedCookies.basketId))
             res.json(order)
-        } catch(e) {
-            next(appError.badRequest(e.message))
-        }
-    }
-
-    async adminGetAll(req, res, next) {
-        try {
-            const orders = await orderModule.getAll()
-            res.json(orders)
         } catch(e) {
             next(appError.badRequest(e.message))
         }
@@ -103,22 +73,20 @@ class Order {
         }
     }
 
-    async userGetAll(req, res, next) {
+    async adminGetAll(req, res, next) {
         try {
-            const orders = await orderModule.getAll(req.auth.id)
+            const orders = await orderModule.getAll()
             res.json(orders)
         } catch(e) {
             next(appError.badRequest(e.message))
         }
     }
 
-    async userGetOne(req, res, next) {
+    async userGetAll(req, res, next) {
         try {
-            if (!req.params.id) {
-                throw new Error('Не указан id заказа')
-            }
-            const order = await orderModule.getOne(req.params.id, req.auth.id)
-            res.json(order)
+            const user = req.user;
+            const orders = await orderModule.getAll(user.id)
+            res.status(200).json(orders)
         } catch(e) {
             next(appError.badRequest(e.message))
         }

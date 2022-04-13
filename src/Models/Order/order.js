@@ -1,13 +1,17 @@
 import { Order as orderModule } from './index.js'
+import { Game as gameModel } from '@models/Game/index.js';
 
 class Order {
-    async getAll(userId = null) {
-        const options = {}
-        if (userId) {
-            options.where = {userId}
-        }
-        const orders = await orderModule.findAll(options)
-        return orders
+    async getAll(userId) {
+        return await orderModule.findAll({
+          where: {
+            userId
+          },
+          include: {
+            model: gameModel,
+            attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
+          },
+    });
     }
 
     async getOne(id, userId = null) {

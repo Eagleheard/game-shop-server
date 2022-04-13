@@ -21,10 +21,10 @@ export const Order = database.define('order', {
         type: DataTypes.STRING, 
         allowNull: false
     },
-    status: {
-        type: DataTypes.INTEGER,
-        allowNull: false, 
-        defaultValue: 0
+    zipCode: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: '111111',
     },
     quantity: {
         type: DataTypes.INTEGER,
@@ -32,7 +32,7 @@ export const Order = database.define('order', {
     comment: {
         type: DataTypes.STRING
     },
-    prettyCreatedAt: {
+    formatedCreatedAt: {
         type: DataTypes.VIRTUAL,
         get() {
             const value = this.getDataValue('createdAt')
@@ -44,7 +44,7 @@ export const Order = database.define('order', {
             return day + '.' + month + '.' + year + ' ' + hours + ':' + minutes
         }
     },
-    prettyUpdatedAt: {
+    formatedUpdatedAt: {
         type: DataTypes.VIRTUAL,
         get() {
             const value = this.getDataValue('updatedAt')
@@ -56,7 +56,7 @@ export const Order = database.define('order', {
             return day + '.' + month + '.' + year + ' ' + hours + ':' + minutes
         }
     },
-})
+}, { timestamps: true })
 
 Game.hasMany(Order, {onDelete: 'RESTRICT'})
 Order.belongsTo(Game)
