@@ -1,0 +1,51 @@
+import { Basket as basketModel } from '@models/Basket/index.js';
+import { Game as gameModel } from '@models/Game/index.js';
+
+class Basket {
+  create({ game, user, quantity }) {
+    return basketModel.create({
+      gameId: game.id,
+      userId: user.id,
+      quantity,
+    });
+  }
+
+  getOne({ user, game }) {
+    return basketModel.findOne({
+      where: {
+        userId: user.id,
+        gameId: game.id,
+      },
+      include: {
+        model: gameModel,
+        attributes: ['id', 'name', 'count', 'price', 'image', 'disk', 'digital'],
+      },
+    });
+  }
+
+  getAll({ user }) {
+    return basketModel.findAll({
+      where: {
+        userId: user.id,
+      },
+      order: [['id', 'DESC']],
+      include: {
+        model: gameModel,
+        attributes: ['id', 'name', 'count', 'price', 'image', 'disk', 'digital'],
+      },
+    });
+  }
+
+  delete({ user, game }) {
+    const where = {};
+    if (user) {
+      where.userId = user.id;
+    }
+    if (game) {
+      where.gameId = game.id;
+    }
+    return basketModel.destroy({ where });
+  }
+}
+
+export default new Basket();

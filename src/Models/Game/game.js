@@ -1,5 +1,4 @@
-import Sequelize from "sequelize";
-import { Op } from "sequelize";
+import { Op } from 'sequelize';
 
 import { Game as gameModule } from './index.js';
 import { Genre as genreModule } from '@models/Genre/index.js';
@@ -11,6 +10,7 @@ class Game {
     currentPage,
     authorId,
     genreId,
+    gameId,
     isNew,
     isPreview,
     order,
@@ -25,6 +25,9 @@ class Game {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
     const orderBy = [];
+    if (gameId) {
+      where.id = gameId;
+    }
     if (genreId) {
       where.genreId = genreId;
     }
@@ -32,11 +35,11 @@ class Game {
       where.authorId = authorId;
     }
     if (minPrice && maxPrice) {
-      where.price = {[Op.between]: [minPrice, maxPrice]};
+      where.price = { [Op.between]: [minPrice, maxPrice] };
     } else if (minPrice) {
-      where.price = {[Op.gte]: [minPrice]};
+      where.price = { [Op.gte]: [minPrice] };
     } else if (maxPrice) {
-      where.price = {[Op.lte]: [maxPrice]};
+      where.price = { [Op.lte]: [maxPrice] };
     }
     if (digital) {
       where.digital = digital;
@@ -45,7 +48,7 @@ class Game {
       where.disk = disk;
     }
     if (count) {
-      where.count = {[Op.gte]: [count]};
+      where.count = { [Op.gte]: [count] };
     }
     if (isNew) {
       where.isNew = isNew;
@@ -72,6 +75,17 @@ class Game {
         { model: authorModule, as: 'author' },
       ],
     });
+  }
+
+  getOne({ gameId, value }) {
+    const where = {};
+    if (gameId) {
+      where.id = gameId;
+    }
+    if (value) {
+      where.count = { [Op.gte]: [value] };
+    }
+    return gameModule.findOne({ where });
   }
 
   getById(id) {

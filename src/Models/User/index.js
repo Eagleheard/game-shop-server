@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import { database } from '@config/database.js';
 
+import { Basket } from '@models/Basket/index.js';
+
 const User = database.define('user', {
   id: {
     type: DataTypes.INTEGER,

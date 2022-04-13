@@ -2,16 +2,19 @@ import express from 'express';
 import config from 'dotenv/config';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import http from 'http';
 
 import { database } from '@config/database.js';
 import ErrorHandler from '@middleware/errorHandler.js';
 import router from '@routes/index.js';
+import socketConnection from '@config/socket';
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+export const server = http.createServer(app);
 
-var whitelist = process.env.WHITELIST;
-const corsOptions = {
+const whitelist = process.env.WHITELIST;
+export const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
@@ -34,6 +37,7 @@ const corsOptions = {
   ],
 };
 
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/api', router);
@@ -43,8 +47,9 @@ app.use(ErrorHandler);
 const start = async () => {
   try {
     await database.authenticate();
-    await database.sync({ alter: true });
-    app.listen(PORT, () => console.log('Server started on', PORT));
+    await database.sync();
+    socketConnection();
+    server.listen(PORT, () => console.log('Server started on', PORT));
   } catch (e) {
     console.log(e);
   }
