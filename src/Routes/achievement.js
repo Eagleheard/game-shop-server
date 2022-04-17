@@ -7,6 +7,5 @@ import achievementController from '@controllers/achievement.js';
 const router = new express.Router();
 
 router.get('/', authMiddleware, achievementController.getAll);
-router.put('/', authMiddleware, achievementController.update);
 
 export default router;

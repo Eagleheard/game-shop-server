@@ -14,7 +14,7 @@ router.get('/auth', authMiddleware, userController.check);
 router.get('/', authMiddleware, adminMiddleware, userController.getAll);
 router.get('/:id([0-9]+)', authMiddleware, userController.getById);
 router.post('/', authMiddleware, adminMiddleware, userController.create);
-router.put('/:id([0-9]+)', authMiddleware, adminMiddleware, userController.update);
+router.put('/:id([0-9]+)', authMiddleware, userController.update);
 router.delete('/:id([0-9]+)', authMiddleware, adminMiddleware, userController.delete);
 
 export default router;

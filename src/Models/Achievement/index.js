@@ -11,13 +11,16 @@ export const Achievement = database.define('achievement', {
   },
   name: {
     type: DataTypes.STRING(25),
-    nique: true,
+    unique: true,
     allowNull: false,
   },
   description: {
     type: DataTypes.STRING(100),
-    nique: true,
+    unique: true,
     allowNull: false,
+  },
+  trigger: {
+    type: DataTypes.INTEGER,
   },
   discount: {
     type: DataTypes.DOUBLE,

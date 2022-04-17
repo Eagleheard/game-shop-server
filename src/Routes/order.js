@@ -6,6 +6,7 @@ import orderController from '@controllers/order.js';
 
 const router = new express.Router();
 
+router.post('/', authMiddleware, orderController.create);
 router.get('/user', authMiddleware, orderController.userGetAll);
 
 export default router;

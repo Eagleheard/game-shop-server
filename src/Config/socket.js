@@ -18,7 +18,7 @@ const socketConnection = () => {
       const newGameInfo = await gameModule.getById(id);
       socket.emit('newGameInfo', newGameInfo);
     });
-    setTimeout(() => socket.emit('clearedCart', basketController.removeAllGamesFromCart), 10000);
+    setTimeout(() => socket.emit('clearedCart', basketController.removeAllGamesFromCart), 1000000);
   });
 };
 export default socketConnection;

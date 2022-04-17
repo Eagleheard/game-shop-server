@@ -5,7 +5,6 @@ import { Order } from '@models/Order/index';
 import { Achievement } from '@models/Achievement/index';
 import { UserAchievement } from '@models/Achievement/junction';
 
-
 const User = database.define('user', {
   id: {
     type: DataTypes.INTEGER,
@@ -40,7 +39,7 @@ User.belongsToMany(Achievement, { through: UserAchievement, onDelete: 'RESTRICT'
 User.hasMany(UserAchievement);
 UserAchievement.belongsTo(User);
 
-User.hasMany(Order, {onDelete: 'SET NULL'})
-Order.belongsTo(User)
+User.hasMany(Order, { onDelete: 'SET NULL' });
+Order.belongsTo(User);
 
 export default User;

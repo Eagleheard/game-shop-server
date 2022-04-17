@@ -1,73 +1,56 @@
-import { Order as orderModule } from './index.js'
+import { Order as orderModule } from './index.js';
 import { Game as gameModel } from '@models/Game/index.js';
 
 class Order {
-    async getAll(userId) {
-        return await orderModule.findAll({
-          where: {
-            userId
-          },
-          include: {
-            model: gameModel,
-            attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
-          },
+  getAll({ userId, order }) {
+    const orderBy = [];
+    if (order === 'Newest') {
+      orderBy.push(['createdAt', 'DESC']);
+    }
+    if (order === 'Eldest') {
+      orderBy.push(['createdAt', 'ASC']);
+    }
+    return orderModule.findAll({
+      where: {
+        userId,
+      },
+      order: orderBy,
+      include: {
+        model: gameModel,
+        attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
+      },
     });
-    }
+  }
 
-    async getOne(id, userId = null) {
-        const options = {
-            where: {id},
-            include: [
-                {model: OrderItemMapping, as: 'items', attributes: ['id', 'name', 'price', 'quantity']},
-            ],
-        }
-        if (userId) options.where.userId = userId
-        const order = await orderModule.findOne(options)
-        if (!order) {
-            throw new Error('Заказ не найден в БД')
-        }
-        return order
+  async getOne(id, userId = null) {
+    const options = {
+      where: { id },
+      include: [
+        { model: OrderItemMapping, as: 'items', attributes: ['id', 'name', 'price', 'quantity'] },
+      ],
+    };
+    if (userId) options.where.userId = userId;
+    const order = await orderModule.findOne(options);
+    if (!order) {
+      throw new Error('Заказ не найден в БД');
     }
+    return order;
+  }
 
-    async create(data) {
-        // общая стоимость заказа
-        const items = data.items
-        const amount = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-        // данные для создания заказа
-        const {name, email, phone, address, comment = null, userId = null} = data
-        const order = await orderModule.create({
-            name, email, phone, address, comment, amount, userId
-        })
-        // товары, входящие в заказ
-        for (let item of items) {
-            await OrderItemMapping.create({
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                orderId: order.id
-            })
-        }
-        // возвращать будем заказ с составом
-        const created = await orderModule.findByPk(order.id, {
-            include: [
-                {model: OrderItemMapping, as: 'items', attributes: ['name', 'price', 'quantity']},
-            ],
-        })
-        return created
-    }
+  create(data) {
+    return orderModule.create(data);
+  }
 
-    async delete(id) {
-        let order = await orderModule.findByPk(id, {
-            include: [
-                {model: OrderItemMapping, attributes: ['name', 'price', 'quantity']},
-            ],
-        })
-        if (!order) {
-            throw new Error('Заказ не найден в БД')
-        }
-        await order.destroy()
-        return order
+  async delete(id) {
+    let order = await orderModule.findByPk(id, {
+      include: [{ model: OrderItemMapping, attributes: ['name', 'price', 'quantity'] }],
+    });
+    if (!order) {
+      throw new Error('Заказ не найден в БД');
     }
+    await order.destroy();
+    return order;
+  }
 }
 
-export default new Order()
+export default new Order();

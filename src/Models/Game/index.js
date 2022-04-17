@@ -4,6 +4,7 @@ import { database } from '@config/database.js';
 import { Genre } from '@models/Genre/index.js';
 import { Author } from '@models/Author/index.js';
 import { Basket } from '@models/Basket/index.js';
+import { Order } from '@models/Order/index.js';
 import User from '@models/User/index.js';
 
 export const Game = database.define('game', {
@@ -61,3 +62,6 @@ User.belongsToMany(Game, { through: Basket, onDelete: 'RESTRICT' });
 
 Game.hasMany(Basket);
 Basket.belongsTo(Game);
+
+Game.hasMany(Order, { onDelete: 'RESTRICT' });
+Order.belongsTo(Game);

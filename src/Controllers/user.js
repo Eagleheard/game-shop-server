@@ -5,8 +5,8 @@ import userModule from '@models/User/user.js';
 import achievementModule from '@models/Achievement/achievement.js';
 import appError from '@errors/appError.js';
 
-const createJwt = (id, email, role, name, lastName) => {
-  return jwt.sign({ id, email, role, name, lastName }, process.env.SECRET_KEY, {
+const createJwt = (id, email, role, name, lastName, photo) => {
+  return jwt.sign({ id, email, role, name, lastName, photo }, process.env.SECRET_KEY, {
     expiresIn: '24h',
   });
 };
@@ -59,9 +59,13 @@ class User {
   }
 
   async check(req, res) {
-    return res
-      .status(200)
-      .json({ id: req.user.id, email: req.user.email, role: req.user.role, name: req.user.name });
+    return res.status(200).json({
+      id: req.user.id,
+      email: req.user.email,
+      role: req.user.role,
+      name: req.user.name,
+      photo: req.user.photo,
+    });
   }
 
   async getAll(req, res, next) {
@@ -102,14 +106,25 @@ class User {
 
   async update(req, res, next) {
     try {
-      if (!req.params.id) {
-        next(appError.badRequest('Id was not set'));
-      }
-      const user = await userModule.update(req.params.id, req.body);
+      const user = await userModule.getById(req.params.id);
       if (!user) {
-        next(appError.notFound('Selected user does not exist'));
+        next(appError.notFound('User not found'));
       }
-      res.status(200).json(user);
+      const updatedUser = await userModule.update({ userId: user.id, photo: req.body.photo });
+      const token = createJwt(
+        updatedUser.id,
+        updatedUser.email,
+        updatedUser.role,
+        updatedUser.name,
+        updatedUser.lastName,
+        updatedUser.photo,
+      );
+      return res
+        .status(200)
+        .cookie('access_token', token, {
+          httpOnly: true,
+        })
+        .json(updatedUser);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }

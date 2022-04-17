@@ -25,17 +25,17 @@ class Achievement {
     ]);
   }
 
-  getOne({ gameCount, gameType }) {
-    return userAchievementModule.findOne({
+  getAllAchievements({ gameCount, gameType }) {
+    return achievementModule.findAll({
       where: {
-        ['$achievement.description$']: { [Op.substring && Op.or]: [gameCount, gameType] },
-      },
-      include: {
-        model: achievementModule,
-        attributes: ['name', 'description', 'discount'],
+        [Op.or]: [
+          { trigger: { [Op.lte]: [gameCount] } },
+          { description: { [Op.substring]: gameType } },
+        ],
       },
     });
   }
+
   update({ userId, achievementId }) {
     return userAchievementModule.update(
       {
