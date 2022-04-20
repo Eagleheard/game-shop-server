@@ -25,7 +25,12 @@ class User {
         next(appError.badRequest('Email already registered'));
       }
       const hash = await bcrypt.hash(password, 5);
-      await userModule.create({ name, lastName, email, password: hash, role });
+      const user = await userModule.create({ name, lastName, email, password: hash, role });
+      await achievementModule.create({
+        achievementId: 1,
+        userId: user.id,
+        isAchieved: true,
+      });
       return res.status(200).json({ message: 'Signed Up successfully' });
     } catch (e) {
       next(appError.internalServerError(e.message));

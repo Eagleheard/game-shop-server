@@ -7,7 +7,7 @@ class Order {
     if (order === 'Newest') {
       orderBy.push(['createdAt', 'DESC']);
     }
-    if (order === 'Eldest') {
+    if (order === 'Oldest') {
       orderBy.push(['createdAt', 'ASC']);
     }
     return orderModule.findAll({
@@ -22,34 +22,17 @@ class Order {
     });
   }
 
-  async getOne(id, userId = null) {
-    const options = {
-      where: { id },
-      include: [
-        { model: OrderItemMapping, as: 'items', attributes: ['id', 'name', 'price', 'quantity'] },
-      ],
-    };
-    if (userId) options.where.userId = userId;
-    const order = await orderModule.findOne(options);
-    if (!order) {
-      throw new Error('Заказ не найден в БД');
-    }
-    return order;
-  }
-
   create(data) {
-    return orderModule.create(data);
-  }
-
-  async delete(id) {
-    let order = await orderModule.findByPk(id, {
-      include: [{ model: OrderItemMapping, attributes: ['name', 'price', 'quantity'] }],
+    orderModule.create(data);
+    return orderModule.findOne({
+      where: {
+        gameId: data.gameId,
+      },
+      include: {
+        model: gameModel,
+        attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
+      },
     });
-    if (!order) {
-      throw new Error('Заказ не найден в БД');
-    }
-    await order.destroy();
-    return order;
   }
 }
 

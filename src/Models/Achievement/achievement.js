@@ -15,14 +15,20 @@ class Achievement {
       },
     });
   }
-  create(userId) {
-    return userAchievementModule.bulkCreate([
-      { achievementId: 1, userId: userId, isAchieved: true },
-      { achievementId: 2, userId: userId },
-      { achievementId: 3, userId: userId },
-      { achievementId: 4, userId: userId },
-      { achievementId: 5, userId: userId },
-    ]);
+
+  getAllNotAchieved() {
+    return achievementModule.findAll();
+  }
+
+  getOne(achievementId) {
+    return userAchievementModule.findOne({
+      where: {
+        achievementId,
+      },
+    });
+  }
+  create(data) {
+    return userAchievementModule.create(data);
   }
 
   getAllAchievements({ gameCount, gameType }) {
