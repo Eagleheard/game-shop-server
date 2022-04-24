@@ -23,16 +23,7 @@ class Order {
   }
 
   create(data) {
-    orderModule.create(data);
-    return orderModule.findOne({
-      where: {
-        gameId: data.gameId,
-      },
-      include: {
-        model: gameModel,
-        attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
-      },
-    });
+    return orderModule.create(data);
   }
 }
 

@@ -1,4 +1,5 @@
 import achievementModule from '@models/Achievement/achievement.js';
+import userAchievementModule from '@models/Achievement/userAchievement.js';
 
 import appError from '@errors/appError.js';
 
@@ -9,7 +10,7 @@ class Achievement {
       if (!user) {
         next(appError.notFound('User does not exist'));
       }
-      const achievement = await achievementModule.getAll(user.id);
+      const achievement = await userAchievementModule.getAll(user.id);
       const notAchieved = await achievementModule.getAllNotAchieved();
       const allAchievements = notAchieved.filter(({ id }) =>
         achievement.every(({ achievementId }) => achievementId !== id),
@@ -25,7 +26,7 @@ class Achievement {
       if (!user) {
         next(appError.notFound('User does not exist'));
       }
-      let achievement = await achievementModule.create(user.id);
+      let achievement = await userAchievementModule.create(user.id);
       return res.status(201).json(achievement);
     } catch (e) {
       next(appError.internalServerError(e.message));

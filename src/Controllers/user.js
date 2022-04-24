@@ -2,11 +2,11 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import userModule from '@models/User/user.js';
-import achievementModule from '@models/Achievement/achievement.js';
+import userAchievementModule from '@models/Achievement/userAchievement.js';
 import appError from '@errors/appError.js';
 
-const createJwt = (id, email, role, name, lastName, photo) => {
-  return jwt.sign({ id, email, role, name, lastName, photo }, process.env.SECRET_KEY, {
+const createJwt = (id, email, role, name) => {
+  return jwt.sign({ id, email, role, name }, process.env.SECRET_KEY, {
     expiresIn: '24h',
   });
 };
@@ -26,7 +26,7 @@ class User {
       }
       const hash = await bcrypt.hash(password, 5);
       const user = await userModule.create({ name, lastName, email, password: hash, role });
-      await achievementModule.create({
+      await userAchievementModule.create({
         achievementId: 1,
         userId: user.id,
         isAchieved: true,
@@ -47,13 +47,13 @@ class User {
       if (!compare) {
         next(appError.badRequest('Wrong email or password'));
       }
-      const token = createJwt(user.id, user.email, user.role, user.name, user.lastName, user.photo);
+      const token = createJwt(user.id, user.email, user.role, user.name);
       return res
         .status(200)
         .cookie('access_token', token, {
           httpOnly: true,
         })
-        .json({ id: user.id, email: user.email, name: user.name });
+        .json({ id: user.id, name: user.name });
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -66,10 +66,8 @@ class User {
   async check(req, res) {
     return res.status(200).json({
       id: req.user.id,
-      email: req.user.email,
       role: req.user.role,
       name: req.user.name,
-      photo: req.user.photo,
     });
   }
 
@@ -90,9 +88,12 @@ class User {
       if (!req.params.id) {
         next(appError.badRequest('Id was not set'));
       }
-      const user = req.user;
+      const user = await userModule.getOne({ where: { id: req.params.id } });
       if (!user) {
         next(appError.notFound('Selected user does not exist'));
+      }
+      if (user.id !== req.user.id) {
+        next(appError.forbidden('You does not have access for this account'));
       }
       res.status(200).json(user);
     } catch (e) {
@@ -116,20 +117,7 @@ class User {
         next(appError.notFound('User not found'));
       }
       const updatedUser = await userModule.update({ userId: user.id, photo: req.body.photo });
-      const token = createJwt(
-        updatedUser.id,
-        updatedUser.email,
-        updatedUser.role,
-        updatedUser.name,
-        updatedUser.lastName,
-        updatedUser.photo,
-      );
-      return res
-        .status(200)
-        .cookie('access_token', token, {
-          httpOnly: true,
-        })
-        .json(updatedUser);
+      return res.status(200).json(updatedUser);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }

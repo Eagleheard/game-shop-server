@@ -1,37 +1,21 @@
-import Sequelize from 'sequelize';
 import { Op } from 'sequelize';
 
 import { Achievement as achievementModule } from '@models/Achievement/index.js';
-import { UserAchievement as userAchievementModule } from '@models/Achievement/junction.js';
 
 class Achievement {
-  getAll(userId) {
-    return userAchievementModule.findAll({
-      where: { userId },
-      order: [['isAchieved', 'DESC']],
-      include: {
-        model: achievementModule,
-        attributes: ['name', 'description', 'discount'],
-      },
-    });
-  }
-
   getAllNotAchieved() {
     return achievementModule.findAll();
   }
 
-  getOne(achievementId) {
-    return userAchievementModule.findOne({
-      where: {
-        achievementId,
-      },
-    });
-  }
-  create(data) {
-    return userAchievementModule.create(data);
-  }
-
-  getAllAchievements({ gameCount, gameType }) {
+  getAllAchievements({ gameCount, disk, digital }) {
+    const gameType = [];
+    if (disk && digital) {
+      gameType.push('edition');
+    } else if (disk) {
+      gameType.push(disk);
+    } else if (digital) {
+      gameType.push(digital);
+    }
     return achievementModule.findAll({
       where: {
         [Op.or]: [
@@ -41,19 +25,6 @@ class Achievement {
       },
     });
   }
-
-  update({ userId, achievementId }) {
-    return userAchievementModule.update(
-      {
-        isAchieved: true,
-      },
-      {
-        where: {
-          userId,
-          achievementId,
-        },
-      },
-    );
-  }
 }
+
 export default new Achievement();

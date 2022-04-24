@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { database } from '@config/database.js';
 
-import { UserAchievement } from './junction';
+import { UserAchievement } from './userAchievementModel.js';
 
 export const Achievement = database.define('achievement', {
   id: {

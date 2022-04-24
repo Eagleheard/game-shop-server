@@ -3,7 +3,7 @@ import { database } from '@config/database.js';
 
 import { Order } from '@models/Order/index';
 import { Achievement } from '@models/Achievement/index';
-import { UserAchievement } from '@models/Achievement/junction';
+import { UserAchievement } from '@models/Achievement/userAchievementModel.js';
 
 const User = database.define('user', {
   id: {

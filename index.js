@@ -47,7 +47,7 @@ app.use(ErrorHandler);
 const start = async () => {
   try {
     await database.authenticate();
-    await database.sync({ alter: true });
+    await database.sync();
     socketConnection();
     server.listen(PORT, () => console.log('Server started on', PORT));
   } catch (e) {
