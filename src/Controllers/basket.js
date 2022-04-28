@@ -14,15 +14,11 @@ class Basket {
       const options = { game, user, quantity: req.query.value };
       let basket = await basketModule.getOne({ game, user });
       if (!basket) {
-        await basketModule.create(options);
-        if (game.disk) {
-          game.decrement('count', { by: req.query.value });
-        }
-        basket = await basketModule.getOne({ game, user });
+        basket = await basketModule.create(options);
       } else {
-        next(appError.badRequest('Required quantity does not exist'));
+        return next(appError.badRequest('Game already in cart'))
       }
-      return res.status(201).json(basket);
+      res.status(201).json(basket);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -37,8 +33,8 @@ class Basket {
       }
       let basket = await basketModule.getOne({ game, user });
       if (parseInt(game.count) !== 0) {
-        await basket.increment('quantity', { by: 1 });
-        await game.decrement('count', { by: 1 });
+        basket.increment('quantity', { by: 1 });
+        game.decrement('count', { by: 1 });
       } else {
         next(appError.badRequest('Required quantity does not exist'));
       }

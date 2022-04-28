@@ -3,6 +3,9 @@ import { Game as gameModel } from '@models/Game/index.js';
 
 class Basket {
   create({ game, user, quantity }) {
+    if (game.disk) {
+      game.decrement('count', { by: quantity });
+    }
     return basketModel.create({
       gameId: game.id,
       userId: user.id,
