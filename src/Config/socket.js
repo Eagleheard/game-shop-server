@@ -5,7 +5,7 @@ import gameModule from '@models/Game/game.js';
 import { server } from '@root/index';
 import { corsOptions } from '@root/index.js';
 
-const cleanCartTimeout = 10000;
+const cleanCartTimeout = 100000;
 
 const socketConnection = () => {
   const io = new Server(server, {
