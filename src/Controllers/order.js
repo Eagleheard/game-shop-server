@@ -29,12 +29,15 @@ class Order {
         ),
       );
       const userOrders = await orderModule.getAll({ userId: user.id });
-      userOrders.map(({ game }) => {
+      userOrders.forEach(({ game }) => {
         if (game.disk) {
           achievementParams.disk = 'disk';
         }
         if (game.digital) {
           achievementParams.digital = 'digital';
+        }
+        if (game.disk && game.digital) {
+          achievementParams.edition = 'edition';
         }
       });
       achievementParams.gameCount = userOrders.reduce(
