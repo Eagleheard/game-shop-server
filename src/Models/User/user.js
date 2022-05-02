@@ -17,10 +17,18 @@ class User {
     return userModule.create(data);
   }
 
-  async update(id, data) {
-    const user = await userModule.findByPk(id);
-    await user.update(data);
-    return user;
+  async update({ userId, photo }) {
+    await userModule.update(
+      {
+        photo,
+      },
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+    return await userModule.findByPk(userId);
   }
 
   async delete(id) {

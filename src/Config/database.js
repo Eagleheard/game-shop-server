@@ -12,5 +12,6 @@ export const database = new Sequelize(
       underscored: true,
       timestamps: false,
     },
+    timezone: 'Europe/Minsk',
   },
 );
