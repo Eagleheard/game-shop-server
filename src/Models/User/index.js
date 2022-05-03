@@ -1,7 +1,9 @@
 import { DataTypes } from 'sequelize';
 import { database } from '@config/database.js';
 
-import { Basket } from '@models/Basket/index.js';
+import { Order } from '@models/Order/index';
+import { Achievement } from '@models/Achievement/index';
+import { UserAchievement } from '@models/Achievement/userAchievementModel.js';
 
 const User = database.define('user', {
   id: {
@@ -30,5 +32,14 @@ const User = database.define('user', {
     type: DataTypes.STRING,
   },
 });
+
+Achievement.belongsToMany(User, { through: UserAchievement, onDelete: 'RESTRICT' });
+User.belongsToMany(Achievement, { through: UserAchievement, onDelete: 'RESTRICT' });
+
+User.hasMany(UserAchievement);
+UserAchievement.belongsTo(User);
+
+User.hasMany(Order, { onDelete: 'SET NULL' });
+Order.belongsTo(User);
 
 export default User;
