@@ -22,6 +22,23 @@ class Order {
     });
   }
 
+  adminGetAll({ order }) {
+    const orderBy = [];
+    if (order === 'Newest') {
+      orderBy.push(['createdAt', 'DESC']);
+    }
+    if (order === 'Oldest') {
+      orderBy.push(['createdAt', 'ASC']);
+    }
+    return orderModule.findAll({
+      order: orderBy,
+      include: {
+        model: gameModel,
+        attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
+      },
+    });
+  }
+
   create(data) {
     return orderModule.create(data);
   }

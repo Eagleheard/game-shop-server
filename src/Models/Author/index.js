@@ -8,7 +8,7 @@ export const Author = database.define('author', {
     autoIncrement: true,
   },
   name: {
-    type: DataTypes.STRING(15),
+    type: DataTypes.STRING(30),
     unique: true,
     allowNull: false,
   },
@@ -19,7 +19,7 @@ export const Author = database.define('author', {
     type: DataTypes.STRING,
   },
   description: {
-    type: DataTypes.STRING(200),
+    type: DataTypes.STRING(300),
   },
   popularity: {
     type: DataTypes.INTEGER,

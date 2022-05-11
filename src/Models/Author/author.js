@@ -9,8 +9,17 @@ class Author {
     return authorModule.findByPk(id);
   }
 
+  getOne({ name }) {
+    return authorModule.findOne({
+      where: {
+        name,
+      },
+    });
+  }
+
   create(data) {
-    return authorModule.create(data);
+    console.log(data);
+    return authorModule.create({ ...data });
   }
 
   async update(id, data) {

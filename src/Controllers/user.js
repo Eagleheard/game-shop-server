@@ -47,7 +47,7 @@ class User {
       if (!compare) {
         next(appError.badRequest('Wrong email or password'));
       }
-      const token = createJwt(user.id, user.email, user.role, user.name);
+      const token = createJwt(user.id, user.email, user.role, user.name, user.lastName);
       return res
         .status(200)
         .cookie('access_token', token, {

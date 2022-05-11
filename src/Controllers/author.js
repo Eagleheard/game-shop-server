@@ -31,7 +31,13 @@ class Author {
 
   async create(req, res, next) {
     try {
-      const author = await authorModule.create(req.body);
+      const author = await authorModule.create({
+        name: req.body.name,
+        image: req.body.image,
+        description: req.body.description,
+        popularity: req.body.popularity,
+        location: req.body.location,
+      });
       res.status(201).json(author);
     } catch (e) {
       next(appError.internalServerError(e.message));

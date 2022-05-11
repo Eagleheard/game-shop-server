@@ -24,7 +24,7 @@ class Achievement {
         gameType.push(digital);
         return gameType;
       }
-    }
+    };
     return achievementModule.findAll({
       where: {
         [Op.or]: [
