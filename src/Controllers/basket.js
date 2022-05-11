@@ -12,7 +12,7 @@ class Basket {
         next(appError.notFound('Game does not exists'));
       }
       const options = { game, user, quantity: req.query.value };
-      let basket = await basketModule.getOne({ game, user }); //getOrCreate
+      let basket = await basketModule.getOne({ game, user });
       if (!basket) {
         basket = await basketModule.create(options);
       } else {
