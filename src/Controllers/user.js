@@ -5,8 +5,8 @@ import userModule from '@models/User/user.js';
 import userAchievementModule from '@models/Achievement/userAchievement.js';
 import appError from '@errors/appError.js';
 
-const createJwt = (id, email, role, name) => {
-  return jwt.sign({ id, email, role, name }, process.env.SECRET_KEY, {
+const createJwt = (id, email, role, name, lastName) => {
+  return jwt.sign({ id, email, role, name, lastName }, process.env.SECRET_KEY, {
     expiresIn: '24h',
   });
 };
@@ -46,6 +46,9 @@ class User {
       let compare = bcrypt.compareSync(password, user.password);
       if (!compare) {
         next(appError.badRequest('Wrong email or password'));
+      }
+      if (user.blocked) {
+        next(appError.forbidden('Your account is blocked'));
       }
       const token = createJwt(user.id, user.email, user.role, user.name, user.lastName);
       return res
@@ -112,12 +115,27 @@ class User {
 
   async update(req, res, next) {
     try {
-      const user = await userModule.getById(req.params.id);
+      let user = await userModule.getById(req.params.id);
       if (!user) {
         next(appError.notFound('User not found'));
       }
-      const updatedUser = await userModule.update({ userId: user.id, photo: req.body.photo });
-      return res.status(200).json(updatedUser);
+      await userModule.update({ userId: user.id, photo: req.body.photo });
+      user = await userModule.getById(req.params.id);
+      return res.status(200).json(user);
+    } catch (e) {
+      next(appError.internalServerError(e.message));
+    }
+  }
+
+  async block(req, res, next) {
+    try {
+      let user = await userModule.getById(req.params.id);
+      if (!user) {
+        return next(appError.notFound('User not found'));
+      }
+      await userModule.update({userId: user.id, blocked: req.body.blocked});
+      user = await userModule.getById(req.params.id);
+      return res.status(200).json(user);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }

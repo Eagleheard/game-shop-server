@@ -2,7 +2,9 @@ import userModule from './index.js';
 
 class User {
   getAll() {
-    return userModule.findAll();
+    return userModule.findAll({
+      order: [['id', 'ASC']]
+    });
   }
 
   getById(id) {
@@ -17,18 +19,15 @@ class User {
     return userModule.create(data);
   }
 
-  async update({ userId, photo }) {
-    await userModule.update(
-      {
-        photo,
-      },
+  update(options) {
+    return userModule.update(
+      options,
       {
         where: {
-          id: userId,
+          id: options.userId,
         },
       },
     );
-    return await userModule.findByPk(userId);
   }
 
   async delete(id) {

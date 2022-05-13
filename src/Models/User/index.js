@@ -31,6 +31,9 @@ const User = database.define('user', {
   lastName: {
     type: DataTypes.STRING,
   },
+  blocked: {
+    type: DataTypes.BOOLEAN,
+  },
 });
 
 Achievement.belongsToMany(User, { through: UserAchievement, onDelete: 'RESTRICT' });
