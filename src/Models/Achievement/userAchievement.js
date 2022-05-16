@@ -20,6 +20,9 @@ class UserAchievement {
       },
     });
   }
+  create(data) {
+    return userAchievementModule.create({ ...data });
+  }
   getOrCreate({ id, achievementId, isAchieved, userId }) {
     return userAchievementModule.findOrCreate({
       where: {

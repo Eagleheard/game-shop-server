@@ -16,7 +16,7 @@ class Basket {
       if (!basket) {
         basket = await basketModule.create(options);
       } else {
-        return next(appError.badRequest('Game already in cart'))
+        return next(appError.badRequest('Game already in cart'));
       }
       basket = await basketModule.getOne({ game, user });
       res.status(201).json(basket);

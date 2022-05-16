@@ -29,7 +29,7 @@ class Order {
         ),
       );
       const userOrders = await orderModule.getAll({ userId: user.id });
-      userOrders.forEach(({ game }) => {
+      createdOrder.forEach(({ game }) => {
         if (game.disk) {
           achievementParams.disk = 'disk';
         }

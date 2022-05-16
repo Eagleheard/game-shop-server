@@ -21,7 +21,7 @@ class Game {
     maxPrice,
     authorName,
     genreName,
-    price
+    price,
   }) {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};

@@ -22,8 +22,14 @@ class Order {
     });
   }
 
-  create(data) {
-    return orderModule.create(data);
+  async create(data) {
+    const game = await orderModule.create(data);
+    return orderModule.findByPk(game.id, {
+      include: {
+        model: gameModel,
+        attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
+      },
+    });
   }
 }
 
