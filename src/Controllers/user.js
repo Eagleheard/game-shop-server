@@ -12,17 +12,14 @@ const createJwt = (id, email, role, name, lastName) => {
 };
 
 class User {
-  async signup({ body: { name, lastName, email, password, role = 'USER' } }, res, next) {
+  async signup({ body: { name, lastName, email, password, role } }, res, next) {
     try {
       if (!email || !password) {
         next(appError.badRequest('Empty email or password'));
       }
-      if (role !== 'USER') {
-        next(appError.forbidden('You can register only as USER'));
-      }
       const candidate = await userModule.getOne({ where: { email } });
       if (candidate) {
-        next(appError.badRequest('Email already registered'));
+        return next(appError.badRequest('Email already registered'));
       }
       const hash = await bcrypt.hash(password, 5);
       const user = await userModule.create({ name, lastName, email, password: hash, role });
@@ -133,7 +130,7 @@ class User {
       if (!user) {
         return next(appError.notFound('User not found'));
       }
-      await userModule.update({userId: user.id, blocked: req.body.blocked});
+      await userModule.update({ userId: user.id, blocked: req.body.blocked });
       user = await userModule.getById(req.params.id);
       return res.status(200).json(user);
     } catch (e) {

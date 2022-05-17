@@ -85,10 +85,11 @@ class Game {
       if (!req.params.id) {
         next(appError.badRequest('Id was not set'));
       }
-      const game = await gameModule.delete(req.params.id);
+      const game = await gameModule.getById(req.params.id);
       if (!game) {
         next(appError.notFound('Selected game does not exist'));
       }
+      await gameModule.delete(req.params.id);
       res.status(200).json(game);
     } catch (e) {
       next(appError.internalServerError(e.message));

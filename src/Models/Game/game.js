@@ -118,6 +118,7 @@ class Game {
     authorId,
     genreId,
     count,
+    popularity,
     isNew,
     preview,
     image,
@@ -145,6 +146,9 @@ class Game {
     if (count) {
       options.count = count;
     }
+    if (popularity) {
+      options.popularity = popularity;
+    }
     if (isNew) {
       options.isNew = isNew;
     }
@@ -166,10 +170,12 @@ class Game {
     return gameModule.update(options, { where: { id: gameId } });
   }
 
-  async delete(id) {
-    const game = await gameModule.findByPk(id);
-    await game.destroy();
-    return game;
+  delete(id) {
+    return gameModule.destroy({
+      where: {
+        id,
+      },
+    });
   }
 }
 

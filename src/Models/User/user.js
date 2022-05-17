@@ -3,7 +3,7 @@ import userModule from './index.js';
 class User {
   getAll() {
     return userModule.findAll({
-      order: [['id', 'ASC']]
+      order: [['id', 'ASC']],
     });
   }
 
@@ -20,14 +20,11 @@ class User {
   }
 
   update(options) {
-    return userModule.update(
-      options,
-      {
-        where: {
-          id: options.userId,
-        },
+    return userModule.update(options, {
+      where: {
+        id: options.userId,
       },
-    );
+    });
   }
 
   async delete(id) {
