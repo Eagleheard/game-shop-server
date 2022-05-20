@@ -22,6 +22,7 @@ class Game {
     maxPrice,
     authorName,
     genreName,
+    price,
   }) {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
@@ -53,6 +54,12 @@ class Game {
     }
     if (isNew) {
       where.isNew = isNew;
+    }
+    if (price && price === 'lowPrice') {
+      orderBy.push(['price', 'ASC']);
+    }
+    if (price && price === 'highPrice') {
+      orderBy.push(['price', 'DESC']);
     }
     if (order) {
       orderBy.push([order, 'DESC']);
