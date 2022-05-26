@@ -1,5 +1,7 @@
 import { Order as orderModule } from './index.js';
 import { Game as gameModel } from '@models/Game/index.js';
+import { Genre as genreModule } from '@models/Genre/index.js';
+import { Author as authorModule } from '@models/Author/index.js';
 
 class Order {
   getAll({ userId, order }) {
@@ -22,14 +24,29 @@ class Order {
     });
   }
 
-  async create(data) {
-    const game = await orderModule.create(data);
-    return orderModule.findByPk(game.id, {
+  adminGetAll({ order }) {
+    const orderBy = [];
+    if (order === 'Newest') {
+      orderBy.push(['createdAt', 'ASC']);
+    }
+    if (order === 'Oldest') {
+      orderBy.push(['createdAt', 'DESC']);
+    }
+    return orderModule.findAll({
+      order: orderBy,
       include: {
         model: gameModel,
         attributes: ['id', 'name', 'price', 'image', 'disk', 'digital'],
+        include: [
+          { model: genreModule, as: 'genre' },
+          { model: authorModule, as: 'author' },
+        ],
       },
     });
+  }
+
+  create(data) {
+    return orderModule.create(data);
   }
 }
 

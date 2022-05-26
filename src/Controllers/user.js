@@ -5,24 +5,21 @@ import userModule from '@models/User/user.js';
 import userAchievementModule from '@models/Achievement/userAchievement.js';
 import appError from '@errors/appError.js';
 
-const createJwt = (id, email, role, name) => {
-  return jwt.sign({ id, email, role, name }, process.env.SECRET_KEY, {
+const createJwt = (id, email, role, name, lastName) => {
+  return jwt.sign({ id, email, role, name, lastName }, process.env.SECRET_KEY, {
     expiresIn: '24h',
   });
 };
 
 class User {
-  async signup({ body: { name, lastName, email, password, role = 'USER' } }, res, next) {
+  async signup({ body: { name, lastName, email, password, role } }, res, next) {
     try {
       if (!email || !password) {
         next(appError.badRequest('Empty email or password'));
       }
-      if (role !== 'USER') {
-        next(appError.forbidden('You can register only as USER'));
-      }
       const candidate = await userModule.getOne({ where: { email } });
       if (candidate) {
-        next(appError.badRequest('Email already registered'));
+        return next(appError.badRequest('Email already registered'));
       }
       const hash = await bcrypt.hash(password, 5);
       const user = await userModule.create({ name, lastName, email, password: hash, role });
@@ -47,7 +44,10 @@ class User {
       if (!compare) {
         next(appError.badRequest('Wrong email or password'));
       }
-      const token = createJwt(user.id, user.email, user.role, user.name);
+      if (user.blocked) {
+        next(appError.forbidden('Your account is blocked'));
+      }
+      const token = createJwt(user.id, user.email, user.role, user.name, user.lastName);
       return res
         .status(200)
         .cookie('access_token', token, {
@@ -112,12 +112,27 @@ class User {
 
   async update(req, res, next) {
     try {
-      const user = await userModule.getById(req.params.id);
+      let user = await userModule.getById(req.params.id);
       if (!user) {
         next(appError.notFound('User not found'));
       }
-      const updatedUser = await userModule.update({ userId: user.id, photo: req.body.photo });
-      return res.status(200).json(updatedUser);
+      await userModule.update({ userId: user.id, photo: req.body.photo });
+      user = await userModule.getById(req.params.id);
+      return res.status(200).json(user);
+    } catch (e) {
+      next(appError.internalServerError(e.message));
+    }
+  }
+
+  async block(req, res, next) {
+    try {
+      let user = await userModule.getById(req.params.id);
+      if (!user) {
+        return next(appError.notFound('User not found'));
+      }
+      await userModule.update({ userId: user.id, blocked: req.body.blocked });
+      user = await userModule.getById(req.params.id);
+      return res.status(200).json(user);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }

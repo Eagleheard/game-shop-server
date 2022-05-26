@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { Game as gameModule } from './index.js';
 import { Genre as genreModule } from '@models/Genre/index.js';
 import { Author as authorModule } from '@models/Author/index.js';
+import { Discount as discountModule } from '@models/Discount/index.js';
 
 class Game {
   getAll({
@@ -25,7 +26,7 @@ class Game {
   }) {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
-    const orderBy = [];
+    const orderBy = [['id', 'ASC']];
     if (gameId) {
       where.id = gameId;
     }
@@ -80,17 +81,21 @@ class Game {
       include: [
         { model: genreModule, as: 'genre' },
         { model: authorModule, as: 'author' },
+        { model: discountModule, as: 'discount' },
       ],
     });
   }
 
-  getOne({ gameId, value }) {
+  getOne({ gameId, value, gameName }) {
     const where = {};
     if (gameId) {
       where.id = gameId;
     }
     if (value) {
       where.count = { [Op.gte]: [value] };
+    }
+    if (gameName) {
+      where.name = gameName;
     }
     return gameModule.findOne({ where });
   }
@@ -100,24 +105,84 @@ class Game {
       include: [
         { model: genreModule, as: 'genre' },
         { model: authorModule, as: 'author' },
+        { model: discountModule, as: 'discount' },
       ],
     });
   }
 
   create(data) {
-    return gameModule.create(data);
+    return gameModule.create({ ...data });
   }
 
-  async update(id, data) {
-    const game = await gameModule.findByPk(id);
-    await game.update(data);
-    return game;
+  update({
+    discountId,
+    gameId,
+    name,
+    price,
+    description,
+    disk,
+    digital,
+    authorId,
+    genreId,
+    count,
+    popularity,
+    isNew,
+    preview,
+    image,
+    isPreview,
+  }) {
+    const options = {};
+    if (discountId) {
+      options.discountId = discountId;
+    }
+    if (name) {
+      options.name = name;
+    }
+    if (price) {
+      options.price = price;
+    }
+    if (description) {
+      options.description = description;
+    }
+    if (disk) {
+      options.disk = disk;
+    }
+    if (digital) {
+      options.digital = digital;
+    }
+    if (count) {
+      options.count = count;
+    }
+    if (popularity) {
+      options.popularity = popularity;
+    }
+    if (isNew) {
+      options.isNew = isNew;
+    }
+    if (image) {
+      options.image = image;
+    }
+    if (preview) {
+      options.preview = preview;
+    }
+    if (isPreview) {
+      options.isPreview = isPreview;
+    }
+    if (authorId) {
+      options.authorId = authorId;
+    }
+    if (genreId) {
+      options.genreId = genreId;
+    }
+    return gameModule.update(options, { where: { id: gameId } });
   }
 
-  async delete(id) {
-    const game = await gameModule.findByPk(id);
-    await game.destroy();
-    return game;
+  delete(id) {
+    return gameModule.destroy({
+      where: {
+        id,
+      },
+    });
   }
 }
 

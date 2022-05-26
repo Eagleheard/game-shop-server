@@ -71,6 +71,15 @@ class Order {
       next(appError.badRequest(e.message));
     }
   }
+
+  async adminGetAll(req, res, next) {
+    try {
+      const orders = await orderModule.adminGetAll({ order: req.query.order });
+      res.status(200).json(orders);
+    } catch (e) {
+      next(appError.badRequest(e.message));
+    }
+  }
 }
 
 export default new Order();

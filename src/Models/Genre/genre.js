@@ -9,6 +9,14 @@ class Genre {
     return genreModule.findByPk(id);
   }
 
+  getOne({ name }) {
+    return genreModule.findOne({
+      where: {
+        name,
+      },
+    });
+  }
+
   create(data) {
     return genreModule.create(data);
   }
