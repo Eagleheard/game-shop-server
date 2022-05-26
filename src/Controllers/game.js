@@ -67,9 +67,9 @@ class Game {
       const genre = await genreModule.getOne({ name: req.body.genreName });
       const game = await gameModule.update({
         gameId: req.params.id,
-        ...req.body,
         authorId: author.id,
         genreId: genre.id,
+        ...req.body,
       });
       if (!game) {
         next(appError.notFound('Selected game does not exist'));

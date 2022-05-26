@@ -18,7 +18,6 @@ class Author {
   }
 
   create(data) {
-    console.log(data);
     return authorModule.create({ ...data });
   }
 
