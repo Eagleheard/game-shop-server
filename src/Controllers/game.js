@@ -16,6 +16,10 @@ class Game {
           if (new Date(endDiscount).getTime() <= Date.now()) {
             return discountModule.delete(id);
           }
+          const discountedGame = gameModule.getById(gameId);
+          if (discountedGame.discountId) {
+            return;
+          }
           if (Date.now() >= new Date(startDiscount).getTime()) {
             return gameModule.update({ discountId: id, gameId });
           }
