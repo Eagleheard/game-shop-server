@@ -53,7 +53,7 @@ class User {
         .cookie('access_token', token, {
           httpOnly: true,
         })
-        .json({ id: user.id, name: user.name });
+        .json({ id: user.id, name: user.name, role: user.role });
     } catch (e) {
       next(appError.internalServerError(e.message));
     }

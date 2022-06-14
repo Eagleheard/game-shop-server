@@ -12,6 +12,7 @@ class Discount {
         endDiscount: req.body.endDiscount,
         discountCount: req.body.discountCount,
         gameId: game.id,
+        gameName: game.name,
       });
       return res.status(201).json(discount);
     } catch (e) {
@@ -22,6 +23,22 @@ class Discount {
   async getAll(req, res, next) {
     try {
       const discount = await discountModule.getAll();
+      res.status(200).json(discount);
+    } catch (e) {
+      next(appError.internalServerError(e.message));
+    }
+  }
+
+  async delete(req, res, next) {
+    try {
+      if (!req.params.id) {
+        next(appError.badRequest('Id was not set'));
+      }
+      const discount = await discountModule.getOne(req.params.id);
+      if (!discount) {
+        next(appError.notFound('Selected discount does not exist'));
+      }
+      await discountModule.delete(req.params.id);
       res.status(200).json(discount);
     } catch (e) {
       next(appError.internalServerError(e.message));

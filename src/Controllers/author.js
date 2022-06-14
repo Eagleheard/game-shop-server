@@ -49,7 +49,8 @@ class Author {
       if (!req.params.id) {
         next(appError.badRequest('Id was not set'));
       }
-      const author = await authorModule.update(req.params.id, req.body);
+      await authorModule.update({ authorId: req.params.id, ...req.body });
+      const author = await authorModule.getById(req.params.id);
       if (!author) {
         next(appError.notFound('Selected author does not exist'));
       }

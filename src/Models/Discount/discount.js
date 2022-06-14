@@ -1,4 +1,5 @@
 import { Discount as discountModule } from '@models/Discount/index.js';
+import { Game as gameModel } from '@models/Game/index.js';
 
 class Discount {
   create(data) {
@@ -10,7 +11,7 @@ class Discount {
   }
 
   getOne(discountId) {
-    return discountModule.findById(discountId);
+    return discountModule.findByPk(discountId);
   }
 
   delete(discountId) {

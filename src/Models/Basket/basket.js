@@ -1,5 +1,6 @@
 import { Basket as basketModel } from '@models/Basket/index.js';
 import { Game as gameModel } from '@models/Game/index.js';
+import { Discount as discountModule } from '@models/Discount/index.js';
 
 class Basket {
   create({ game, user, quantity }) {
@@ -34,7 +35,9 @@ class Basket {
       order: [['id', 'DESC']],
       include: {
         model: gameModel,
-        attributes: ['id', 'name', 'count', 'price', 'image', 'disk', 'digital'],
+        include: {
+          model: discountModule,
+        },
       },
     });
   }

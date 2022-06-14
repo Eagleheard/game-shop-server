@@ -55,7 +55,8 @@ class Game {
         genreId: genre.id,
         ...req.body,
       });
-      res.status(201).json(game);
+      const createdGame = await gameModule.getById(game.id);
+      res.status(201).json(createdGame);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -65,16 +66,17 @@ class Game {
     try {
       const author = await authorModule.getOne({ name: req.body.authorName });
       const genre = await genreModule.getOne({ name: req.body.genreName });
-      const game = await gameModule.update({
+      await gameModule.update({
         gameId: req.params.id,
         authorId: author.id,
         genreId: genre.id,
         ...req.body,
       });
-      if (!game) {
+      const updatedGame = await gameModule.getById(req.params.id);
+      if (!updatedGame) {
         next(appError.notFound('Selected game does not exist'));
       }
-      return res.status(200).json(game);
+      return res.status(200).json(updatedGame);
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
