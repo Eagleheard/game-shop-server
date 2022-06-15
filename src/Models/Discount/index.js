@@ -1,8 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { database } from '@config/database.js';
 
-import { Game } from '@models/Game/index.js';
-
 export const Discount = database.define(
   'discount',
   {
@@ -50,6 +48,3 @@ export const Discount = database.define(
   },
   { timestamps: true },
 );
-
-Discount.hasMany(Game);
-Game.belongsTo(Discount, { foreignKey: 'discountId' });

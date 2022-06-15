@@ -2,6 +2,7 @@ import { Server } from 'socket.io';
 
 import basketController from '@controllers/basket.js';
 import gameModule from '@models/Game/game.js';
+import commentsModule from '@models/Comments/comments.js';
 import { server } from '@root/index';
 import { corsOptions } from '@root/index.js';
 
@@ -24,6 +25,11 @@ const socketConnection = () => {
       () => socket.emit('clearedCart', basketController.removeAllGamesFromCart),
       cleanCartTimeout,
     );
+
+    socket.on('addNewComment', async (params) => {
+      const gameComments = await commentsModule.getAll(params);
+      io.emit('newComments', gameComments);
+    });
   });
 };
 export default socketConnection;

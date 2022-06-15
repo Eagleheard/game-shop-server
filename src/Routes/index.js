@@ -8,6 +8,7 @@ import achievement from './achievement.js';
 import order from './order.js';
 import basket from './basket.js';
 import discount from './discount.js';
+import comments from './comments.js';
 
 const router = new express.Router();
 
@@ -19,5 +20,6 @@ router.use('/achievement', achievement);
 router.use('/order', order);
 router.use('/basket', basket);
 router.use('/discount', discount);
+router.use('/comments', comments);
 
 export default router;

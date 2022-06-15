@@ -26,7 +26,7 @@ class Game {
   }) {
     const offset = (currentPage - 1) * dataLimit;
     const where = {};
-    const orderBy = [['id', 'ASC']];
+    let orderBy = [['id', 'ASC']];
     if (gameId) {
       where.id = gameId;
     }
@@ -56,13 +56,13 @@ class Game {
       where.isNew = isNew;
     }
     if (price && price === 'lowPrice') {
-      orderBy.push(['price', 'ASC']);
+      orderBy = [['price', 'ASC']];
     }
     if (price && price === 'highPrice') {
-      orderBy.push(['price', 'DESC']);
+      orderBy = [['price', 'DESC']];
     }
     if (order) {
-      orderBy.push([order, 'DESC']);
+      orderBy = [[order, 'DESC']];
     }
     if (isPreview) {
       where.isPreview = isPreview;
