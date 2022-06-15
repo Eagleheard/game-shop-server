@@ -11,16 +11,22 @@ class Game {
       const currentPage = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
       const options = { dataLimit, currentPage, ...query };
       const discounts = await discountModule.getAll();
-      await Promise.all(
-        discounts.map(({ id, gameId, startDiscount, endDiscount }) => {
-          if (new Date(endDiscount).getTime() <= Date.now()) {
-            return discountModule.delete(id);
-          }
-          if (Date.now() >= new Date(startDiscount).getTime()) {
-            return gameModule.update({ discountId: id, gameId });
-          }
-        }),
-      );
+      if (discounts) {
+        await Promise.all(
+          discounts.map(async({ id, gameId, startDiscount, endDiscount }) => {
+            if (new Date(endDiscount).getTime() <= Date.now()) {
+              return discountModule.delete(id);
+            }
+            const discountedGame = await gameModule.getById(gameId);
+            if (discountedGame.discountId) {
+              return;
+            }
+            if (Date.now() >= new Date(startDiscount).getTime()) {
+              return gameModule.update({ discountId: id, gameId });
+            }
+          }),
+        );
+      }
       const games = await gameModule.getAll(options);
       if (!games) {
         next(appError.notFound('Games does not exists'));
