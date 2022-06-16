@@ -11,9 +11,6 @@ class Order {
       const user = req.user;
       const achievementParams = {};
       const cartGames = await basketModule.getAll({ user });
-      if (cartGames.length === 0) {
-        next(appError.badRequest('Cart is empty'));
-      }
       const createdOrder = await Promise.all(
         cartGames.map(({ quantity, gameId }) =>
           orderModule.create({
@@ -55,8 +52,8 @@ class Order {
           });
         }),
       );
-      await basketModule.delete({ user });
       res.status(201).json(createdOrder);
+      await basketModule.delete({ user });
     } catch (e) {
       next(appError.badRequest(e.message));
     }

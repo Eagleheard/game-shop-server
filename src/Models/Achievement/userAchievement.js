@@ -29,6 +29,7 @@ class UserAchievement {
     return userAchievementModule.findOrCreate({
       where: {
         achievementId: id,
+        userId,
       },
       defaults: {
         achievementId,
