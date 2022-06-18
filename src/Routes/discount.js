@@ -9,5 +9,6 @@ const router = new express.Router();
 router.post('/', authMiddleware, adminMiddleware, discountController.create);
 router.get('/', authMiddleware, discountController.getAll);
 router.delete('/:id([0-9]+)', authMiddleware, adminMiddleware, discountController.delete);
+router.delete('/', authMiddleware, adminMiddleware, discountController.deleteAll);
 
 export default router;

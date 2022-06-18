@@ -21,6 +21,12 @@ class Discount {
       },
     });
   }
+
+  deleteAll() {
+    return discountModule.destroy({
+      where: {},
+    });
+  }
 }
 
 export default new Discount();

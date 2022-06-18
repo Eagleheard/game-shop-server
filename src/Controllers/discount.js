@@ -6,6 +6,22 @@ import gameModule from '@models/Game/game.js';
 class Discount {
   async create(req, res, next) {
     try {
+      if (req.body.gameName === 'All') {
+        const games = await gameModule.getAll({ currentPage: null, dataLimit: null });
+        const discount = await Promise.all(
+          games.rows.map((game) => 
+            discountModule.create({
+              startDiscount: req.body.startDiscount,
+              endDiscount: req.body.endDiscount,
+              discountCount: req.body.discountCount,
+              gameId: game.id,
+              gameName: game.name,
+            })
+          )
+        )
+        return res.status(201).json(discount);
+      }
+      if (req.body.gameName !== 'All') {
       const game = await gameModule.getOne({ gameName: req.body.gameName });
       const discount = await discountModule.create({
         startDiscount: req.body.startDiscount,
@@ -14,7 +30,8 @@ class Discount {
         gameId: game.id,
         gameName: game.name,
       });
-      return res.status(201).json(discount);
+      return res.status(201).json([discount]);
+    }
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
@@ -40,6 +57,15 @@ class Discount {
       }
       await discountModule.delete(req.params.id);
       res.status(200).json(discount);
+    } catch (e) {
+      next(appError.internalServerError(e.message));
+    }
+  }
+
+  async deleteAll(req, res, next) {
+    try {
+      await discountModule.deleteAll();
+      res.status(200).json({message: 'Successfully deleted'});
     } catch (e) {
       next(appError.internalServerError(e.message));
     }
