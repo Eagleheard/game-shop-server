@@ -19,7 +19,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r esm -r module-alias/register"
+    "dev": "nodemon -r esm -r module-alias/register",
+    "build": "nodemon -r esm -r module-alias/register"
   },
   "keywords": [],
   "author": "",
