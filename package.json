@@ -20,7 +20,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r esm -r module-alias/register",
-    "build": "nodemon -r esm -r module-alias/register"
+    "build": "node index.js"
   },
   "keywords": [],
   "author": "",
