@@ -22,6 +22,9 @@ export const Discount = database.define(
       type: DataTypes.INTEGER,
       unique: true,
     },
+    gameName: {
+      type: DataTypes.STRING,
+    },
     formatedStartDiscount: {
       type: DataTypes.VIRTUAL,
       get() {

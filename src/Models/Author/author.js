@@ -2,7 +2,9 @@ import { Author as authorModule } from './index.js';
 
 class Author {
   getAll() {
-    return authorModule.findAll();
+    return authorModule.findAll({
+      order: [['id', 'ASC']],
+    });
   }
 
   getById(id) {
@@ -21,16 +23,29 @@ class Author {
     return authorModule.create({ ...data });
   }
 
-  async update(id, data) {
-    const author = await authorModule.findByPk(id);
-    await author.update(data);
-    return author;
+  update({ authorId, name, location, description, popularity }) {
+    const options = {};
+    if (name) {
+      options.name = name;
+    }
+    if (location) {
+      options.location = location;
+    }
+    if (description) {
+      options.description = description;
+    }
+    if (popularity) {
+      options.popularity = popularity;
+    }
+    return authorModule.update(options, { where: { id: authorId } });
   }
 
-  async delete(id) {
-    const author = await authorModule.findByPk(id);
-    await author.destroy();
-    return author;
+  delete(id) {
+    return authorModule.destroy({
+      where: {
+        id,
+      },
+    });
   }
 }
 

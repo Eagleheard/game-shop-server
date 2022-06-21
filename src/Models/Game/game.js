@@ -111,7 +111,7 @@ class Game {
   }
 
   create(data) {
-    return gameModule.create({ ...data });
+    return gameModule.create(data);
   }
 
   update({
@@ -156,7 +156,7 @@ class Game {
     if (popularity) {
       options.popularity = popularity;
     }
-    if (isNew) {
+    if (isNew || isNew === false) {
       options.isNew = isNew;
     }
     if (image) {
@@ -165,7 +165,7 @@ class Game {
     if (preview) {
       options.preview = preview;
     }
-    if (isPreview) {
+    if (isPreview || isPreview === false) {
       options.isPreview = isPreview;
     }
     if (authorId) {
