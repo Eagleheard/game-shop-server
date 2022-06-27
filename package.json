@@ -19,8 +19,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r esm -r module-alias/register",
-    "build": "[my-framework] build --output public"
+    "start": "nodemon -r esm -r module-alias/register",
+    "heroku-postbuild": "npm run build"
   },
   "keywords": [],
   "author": "",
