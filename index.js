@@ -9,7 +9,7 @@ import ErrorHandler from '@middleware/errorHandler.js';
 import router from '@routes/index.js';
 import socketConnection from '@config/socket';
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 const app = express();
 export const server = http.createServer(app);
 
