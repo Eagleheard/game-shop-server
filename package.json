@@ -20,8 +20,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r esm -r module-alias/register",
+    "build": "webpack",
     "heroku-postbuild": "npm run build"
-
   },
   "keywords": [],
   "author": "",
@@ -38,5 +38,6 @@
     "@routes": "src/Routes",
     "@middleware": "src/Middleware",
     "@config": "src/Config"
-  }
+  },
+  "heroku-run-build-script": true
 }
