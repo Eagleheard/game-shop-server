@@ -19,8 +19,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r esm -r module-alias/register",
-    "build": "[my-framework] build --output public"
+    "start": "nodemon -r esm -r module-alias/register"
   },
   "keywords": [],
   "author": "",
@@ -37,5 +36,6 @@
     "@routes": "src/Routes",
     "@middleware": "src/Middleware",
     "@config": "src/Config"
-  }
+  },
+  "heroku-run-build-script": true
 }
