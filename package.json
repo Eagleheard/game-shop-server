@@ -19,7 +19,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r esm -r module-alias/register"
+    "start": "node -r esm -r module-alias/register index.js"
   },
   "keywords": [],
   "author": "",
